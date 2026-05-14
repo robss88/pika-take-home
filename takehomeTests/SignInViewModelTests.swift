@@ -50,4 +50,35 @@ struct SignInViewModelTests {
         await vm.submit()
         #expect(didAdvance == false)
     }
+
+    @Test func updatePhone_runs_text_through_the_formatter() {
+        let vm = SignInViewModel(
+            auth: MockAuthService(delay: .zero),
+            phoneFormatter: USPhoneNumberFormatter(),
+            onSignedIn: { _ in }
+        )
+        vm.updatePhone("2025550123")
+        #expect(vm.phoneText == "(202) 555-0123")
+    }
+
+    @Test func parsedPhone_returns_E164_after_valid_input() {
+        let vm = SignInViewModel(
+            auth: MockAuthService(delay: .zero),
+            phoneFormatter: USPhoneNumberFormatter(),
+            onSignedIn: { _ in }
+        )
+        vm.updatePhone("2025550123")
+        #expect(vm.parsedPhone?.e164String == "+12025550123")
+    }
+
+    @Test func submitting_state_clears_after_failure() async {
+        let vm = SignInViewModel(
+            auth: MockAuthService(shouldFail: true, delay: .zero),
+            phoneFormatter: USPhoneNumberFormatter(),
+            onSignedIn: { _ in }
+        )
+        vm.updatePhone("2025550123")
+        await vm.submit()
+        #expect(vm.isSubmitting == false)
+    }
 }

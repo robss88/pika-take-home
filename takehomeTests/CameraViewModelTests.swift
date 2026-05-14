@@ -59,6 +59,45 @@ struct CameraViewModelTests {
             Issue.record("expected .failed, got \(vm.phase)")
         }
     }
+
+    @Test func back_invokes_callback() {
+        var didBack = false
+        let vm = CameraViewModel(
+            cameraService: StubCameraService(),
+            phone: E164(countryCode: "1", national: "2025550123"),
+            onCaptured: { _ in },
+            onBack: { didBack = true }
+        )
+        vm.back()
+        #expect(didBack)
+    }
+
+    @Test func capture_is_noop_unless_phase_is_ready() async {
+        let stub = StubCameraService()
+        stub.willReturnURL = URL(fileURLWithPath: "/tmp/should-not-fire.jpg")
+        let vm = CameraViewModel(
+            cameraService: stub,
+            phone: E164(countryCode: "1", national: "2025550123"),
+            onCaptured: { _ in Issue.record("captured before .ready") },
+            onBack: { }
+        )
+        // Note: vm.start() not called; phase stays .idle.
+        await vm.capture()
+        #expect(vm.phase == .idle)
+    }
+
+    @Test func flip_is_noop_when_not_ready() {
+        let stub = StubCameraService()
+        let vm = CameraViewModel(
+            cameraService: stub,
+            phone: E164(countryCode: "1", national: "2025550123"),
+            onCaptured: { _ in },
+            onBack: { }
+        )
+        // phase = .idle, flip should not affect the service.
+        vm.flip()
+        #expect(vm.phase == .idle)
+    }
 }
 
 // MARK: - Stub camera

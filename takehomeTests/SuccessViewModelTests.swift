@@ -39,4 +39,50 @@ struct SuccessViewModelTests {
             Issue.record("expected .error, got \(vm.loadState)")
         }
     }
+
+    @Test func dismiss_invokes_callback() {
+        var dismissed = false
+        let vm = SuccessViewModel(
+            client: MockOnboardingClient(delay: .zero),
+            selfieURL: Self.selfieURL,
+            voiceURL: Self.voiceURL,
+            openMessages: { },
+            onDismiss: { dismissed = true }
+        )
+        vm.dismiss()
+        #expect(dismissed)
+    }
+
+    @Test func openMessages_closure_is_held_and_callable() {
+        var opened = 0
+        let vm = SuccessViewModel(
+            client: MockOnboardingClient(delay: .zero),
+            selfieURL: Self.selfieURL,
+            voiceURL: Self.voiceURL,
+            openMessages: { opened += 1 },
+            onDismiss: { }
+        )
+        vm.openMessages()
+        vm.openMessages()
+        #expect(opened == 2)
+    }
+
+    @Test func loaded_card_echoes_selfie_url_through_mock_pipeline() async {
+        let selfieURL = URL(fileURLWithPath: "/tmp/avatar-echo.jpg")
+        let vm = SuccessViewModel(
+            client: MockOnboardingClient(delay: .zero),
+            selfieURL: selfieURL,
+            voiceURL: Self.voiceURL,
+            openMessages: { },
+            onDismiss: { }
+        )
+        await vm.load()
+        guard case .loaded(let card) = vm.loadState else {
+            Issue.record("expected .loaded")
+            return
+        }
+        // MockOnboardingClient echoes the selfieKey back as avatarURL so the
+        // success screen can render the user's actual photo.
+        #expect(card.avatarURL?.path == selfieURL.path)
+    }
 }

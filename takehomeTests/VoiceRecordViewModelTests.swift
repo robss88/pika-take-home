@@ -63,6 +63,62 @@ struct VoiceRecordViewModelTests {
         #expect(vm.phase == .idle)
         #expect(vm.recordingURL == nil)
     }
+
+    @Test func tokens_are_derived_from_provided_script() {
+        let vm = VoiceRecordViewModel(
+            recorder: StubAudioRecorder(),
+            aligner: FakeTimedSpeechAligner(),
+            script: "Hello, world!",
+            onAccepted: { _ in },
+            onBack: { }
+        )
+        #expect(vm.tokens.map(\.normalized) == ["hello", "world"])
+    }
+
+    @Test func accept_is_noop_without_a_recording() {
+        let vm = VoiceRecordViewModel(
+            recorder: StubAudioRecorder(),
+            aligner: FakeTimedSpeechAligner(),
+            script: "best self",
+            onAccepted: { _ in Issue.record("accept fired without recording") },
+            onBack: { }
+        )
+        vm.accept()
+        #expect(vm.recordingURL == nil)
+    }
+
+    @Test func back_invokes_callback() {
+        var didBack = false
+        let vm = VoiceRecordViewModel(
+            recorder: StubAudioRecorder(),
+            aligner: FakeTimedSpeechAligner(),
+            script: "best self",
+            onAccepted: { _ in },
+            onBack: { didBack = true }
+        )
+        vm.back()
+        #expect(didBack)
+    }
+
+    @Test func highlightedIndex_is_monotonic_under_aligner_emissions() async {
+        let recorder = StubAudioRecorder()
+        let aligner = FakeTimedSpeechAligner()
+        aligner.intervalPerWord = .milliseconds(1)
+        let vm = VoiceRecordViewModel(
+            recorder: recorder,
+            aligner: aligner,
+            script: "one two three four",
+            onAccepted: { _ in },
+            onBack: { }
+        )
+
+        await vm.toggleRecord()
+        try? await Task.sleep(for: .milliseconds(60))
+        let mid = vm.highlightedIndex
+        try? await Task.sleep(for: .milliseconds(80))
+        #expect(vm.highlightedIndex >= mid)
+        await vm.toggleRecord()
+    }
 }
 
 // MARK: - Stub recorder
