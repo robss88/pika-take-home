@@ -1,17 +1,18 @@
-//
-//  takehomeApp.swift
-//  takehome
-//
-//  Created by Robert Avellar on 5/13/26.
-//
-
 import SwiftUI
 
 @main
 struct takehomeApp: App {
+    private let environment: AppEnvironment = .resolved()
+
+    init() {
+        FontRegistration.registerBundledFonts()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .applyAppEnvironment(environment)
+                .preferredColorScheme(.light)
         }
     }
 }
