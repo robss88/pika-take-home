@@ -10,7 +10,7 @@ struct takehomeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            AppShell()
                 .applyAppEnvironment(environment)
                 .preferredColorScheme(.light)
         }

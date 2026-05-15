@@ -1,41 +1,27 @@
-//
-//  takehomeUITests.swift
-//  takehomeUITests
-//
-//  Created by Robert Avellar on 5/13/26.
-//
-
 import XCTest
 
+/// Smoke coverage for the onboarding entry point. The flow itself (camera,
+/// voice, success) is covered by ViewModel-level Swift Testing suites in
+/// `takehomeTests/`; this file's job is to confirm the app boots into the
+/// sign-in screen with the expected affordances visible.
 final class takehomeUITests: XCTestCase {
-
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func test_app_launches_to_sign_in_screen() {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    @MainActor
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
+        let hero = app.staticTexts["YOUR AI SELF IS\nWAITING"]
+        XCTAssertTrue(
+            hero.waitForExistence(timeout: 5),
+            "Expected sign-in hero copy to be visible on launch."
+        )
+        XCTAssertTrue(
+            app.buttons["Continue"].exists,
+            "Expected Continue button on the sign-in screen."
+        )
     }
 }

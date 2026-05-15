@@ -10,7 +10,7 @@ nonisolated struct LiveOnboardingClient: OnboardingClient {
     let api: any APIClient
 
     func createAISelf(_ request: AISelfRequest) async throws -> IDCard {
-        let endpoint: Endpoint<IDCard> = .json(.post, "/v1/ai-selves", body: request)
+        let endpoint: Endpoint<IDCard> = .json(.post, APIPaths.createAISelf, body: request)
         return try await api.send(endpoint)
     }
 }

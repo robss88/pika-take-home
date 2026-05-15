@@ -25,7 +25,7 @@ nonisolated struct LiveAuthService: AuthService {
         case .email:
             body = AuthRequest(method: .email, phone: nil)
         }
-        let endpoint: Endpoint<AuthToken> = .json(.post, "/v1/auth/phone", body: body)
+        let endpoint: Endpoint<AuthToken> = .json(.post, APIPaths.signIn, body: body)
         return try await api.send(endpoint)
     }
 }

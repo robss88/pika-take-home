@@ -2,7 +2,7 @@
 import SwiftUI
 
 /// Stand-in for the live camera preview on the simulator (which has no
-/// camera hardware). Used together with `SimulatorCameraService` so the
+/// camera hardware). Used together with `StubCameraService` so the
 /// flow stays end-to-end testable without a physical device.
 struct SimulatorPreviewStub: View {
     var body: some View {

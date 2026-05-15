@@ -92,10 +92,11 @@ struct SuccessView: View {
 #Preview {
     SuccessView(
         viewModel: SuccessViewModel(
-            client: MockOnboardingClient(),
+            client: AppEnvironment.preview.onboarding,
+            phone: E164(countryCode: "1", national: "2025550123"),
             selfieURL: URL(fileURLWithPath: "/tmp/preview-selfie.jpg"),
             voiceURL: URL(fileURLWithPath: "/tmp/preview-voice.m4a"),
-            openMessages: { },
+            openMessages: AppEnvironment.preview.openMessages,
             onDismiss: { }
         )
     )

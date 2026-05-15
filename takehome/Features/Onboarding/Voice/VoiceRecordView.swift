@@ -57,8 +57,8 @@ struct VoiceRecordView: View {
 #Preview {
     VoiceRecordView(
         viewModel: VoiceRecordViewModel(
-            recorder: AVAudioRecorderService(),
-            aligner: FakeTimedSpeechAligner(),
+            recorder: AppEnvironment.preview.audioRecorderFactory(),
+            aligner: AppEnvironment.preview.speechAlignerFactory(),
             onAccepted: { _ in },
             onBack: { }
         )

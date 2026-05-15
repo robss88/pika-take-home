@@ -29,13 +29,13 @@ struct AppEnvironment: Sendable {
     }
 
     /// On a real device we hand back a live `AVCameraService`. On the
-    /// simulator (which has no camera hardware) we fall back to a stub that
-    /// generates a placeholder JPG when the shutter fires, so the flow
+    /// simulator (which has no camera hardware) we fall back to `StubCameraService`
+    /// that generates a placeholder JPG when the shutter fires, so the flow
     /// stays end-to-end testable without a physical device.
     @MainActor
     private static func makeCameraService() -> any CameraService {
         #if targetEnvironment(simulator)
-        return SimulatorCameraService()
+        return StubCameraService()
         #else
         return AVCameraService()
         #endif
@@ -76,8 +76,10 @@ struct AppEnvironment: Sendable {
         )
     }()
 
-    /// Lightweight env for SwiftUI #Preview: everything mocked, deterministic
-    /// speech alignment, no camera/audio I/O.
+    /// Lightweight env for SwiftUI #Preview and tests: everything mocked,
+    /// deterministic speech alignment, no real camera / microphone / network
+    /// I/O. Audio playback is a no-op `AudioPlayer` that degrades silently
+    /// when bundle media is absent.
     static let preview: AppEnvironment = {
         AppEnvironment(
             api: MockAPIClient.preloaded(),
@@ -85,8 +87,8 @@ struct AppEnvironment: Sendable {
             onboarding: MockOnboardingClient(),
             phoneFormatter: USPhoneNumberFormatter(),
             speechAlignerFactory: { FakeTimedSpeechAligner() },
-            cameraServiceFactory: { Self.makeCameraService() },
-            audioRecorderFactory: { AVAudioRecorderService() },
+            cameraServiceFactory: { StubCameraService() },
+            audioRecorderFactory: { StubAudioRecorder() },
             audioPlayerFactory: { AudioPlayer() },
             openMessages: { }
         )
@@ -96,12 +98,27 @@ struct AppEnvironment: Sendable {
 // MARK: - Environment plumbing
 
 private struct AppEnvironmentKey: EnvironmentKey {
-    static let defaultValue: AppEnvironment = .preview
+    /// `nil` by design: a RELEASE build that reads `\.app` outside an
+    /// `.applyAppEnvironment(_:)` subtree should trap, not silently fall
+    /// back to mock data. DEBUG keeps a `.preview` fallback because SwiftUI's
+    /// graph-update phase occasionally probes child environments before the
+    /// modifier finishes propagating, and trapping there is too noisy.
+    static let defaultValue: AppEnvironment? = nil
 }
 
 extension EnvironmentValues {
     var app: AppEnvironment {
-        get { self[AppEnvironmentKey.self] }
+        get {
+            if let env = self[AppEnvironmentKey.self] { return env }
+            #if DEBUG
+            return .preview
+            #else
+            fatalError(
+                "AppEnvironment not provided. Apply `.applyAppEnvironment(_:)` " +
+                "to the view tree (root or preview) before reading `\\.app`."
+            )
+            #endif
+        }
         set { self[AppEnvironmentKey.self] = newValue }
     }
 }

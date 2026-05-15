@@ -7,10 +7,12 @@ import Testing
 struct SuccessViewModelTests {
     private static let selfieURL = URL(fileURLWithPath: "/tmp/test-selfie.jpg")
     private static let voiceURL  = URL(fileURLWithPath: "/tmp/test-voice.m4a")
+    private static let phone = E164(countryCode: "1", national: "2025550123")
 
     @Test func loaded_state_after_successful_creation() async {
         let vm = SuccessViewModel(
             client: MockOnboardingClient(delay: .zero),
+            phone: Self.phone,
             selfieURL: Self.selfieURL,
             voiceURL: Self.voiceURL,
             openMessages: { },
@@ -27,6 +29,7 @@ struct SuccessViewModelTests {
     @Test func error_state_when_client_fails() async {
         let vm = SuccessViewModel(
             client: MockOnboardingClient(delay: .zero, shouldFail: true),
+            phone: Self.phone,
             selfieURL: Self.selfieURL,
             voiceURL: Self.voiceURL,
             openMessages: { },
@@ -44,6 +47,7 @@ struct SuccessViewModelTests {
         var dismissed = false
         let vm = SuccessViewModel(
             client: MockOnboardingClient(delay: .zero),
+            phone: Self.phone,
             selfieURL: Self.selfieURL,
             voiceURL: Self.voiceURL,
             openMessages: { },
@@ -57,6 +61,7 @@ struct SuccessViewModelTests {
         var opened = 0
         let vm = SuccessViewModel(
             client: MockOnboardingClient(delay: .zero),
+            phone: Self.phone,
             selfieURL: Self.selfieURL,
             voiceURL: Self.voiceURL,
             openMessages: { opened += 1 },
@@ -71,6 +76,7 @@ struct SuccessViewModelTests {
         let selfieURL = URL(fileURLWithPath: "/tmp/avatar-echo.jpg")
         let vm = SuccessViewModel(
             client: MockOnboardingClient(delay: .zero),
+            phone: Self.phone,
             selfieURL: selfieURL,
             voiceURL: Self.voiceURL,
             openMessages: { },

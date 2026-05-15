@@ -12,33 +12,36 @@ Built against iOS 26.2, Swift 6 with strict concurrency complete, zero third-par
 
 `#if DEBUG` defaults the app to [`AppEnvironment.mock`](takehome/App/AppEnvironment.swift), so every screen works end-to-end without a real backend. Release builds use `.live` against [`APIConfig.live.baseURL`](takehome/Core/Networking/APIConfig.swift) (currently a placeholder).
 
-Tests: ⌘U. 21 Swift Testing tests across `takehomeTests/` covering the API client contract, phone validation, and every ViewModel's happy/failure path.
+Tests: ⌘U. 61 Swift Testing cases across `takehomeTests/` cover the API client contract, endpoint construction, phone validation, codable round-trips, and every ViewModel's happy/failure path. A single XCUITest smoke (`takehomeUITests/`) confirms the app boots into the sign-in screen.
 
 ## Architecture in one breath
 
 - **`@Observable` ViewModels**, one per screen, default-MainActor isolated.
-- **Protocol-based DI** via a custom `@Environment(\.app)` value carrying `APIClient`, `AuthService`, `OnboardingClient`, `PhoneNumberFormatter`, plus factories for stateful services (camera, recorder, speech aligner).
-- **Typed navigation**: a single `NavigationStack` driven by a `[OnboardingRoute]` path on [`OnboardingCoordinator`](takehome/Features/Onboarding/OnboardingCoordinator.swift). Each route carries forward exactly the data the next step needs — no shared mutable model.
-- **Networking**: `URLSession` async/await + typed `Endpoint<Response>` descriptors. `LiveAPIClient` is fully implemented; flipping `AppEnvironment.resolved()` from `.mock` to `.live` is the only switch needed once the backend exists.
+- **Protocol-based DI** via a custom `@Environment(\.app)` value carrying `APIClient`, `AuthService`, `OnboardingClient`, `PhoneNumberFormatter`, plus factories for stateful services (camera, recorder, speech aligner, audio player). The env's `EnvironmentKey` default is `nil`; reading `\.app` outside an `.applyAppEnvironment(_:)` subtree traps in RELEASE so a missing wiring fails loudly instead of silently falling back to mock data.
+- **App-level shell + feature-scoped flows.** [`AppShell`](takehome/App/AppShell.swift) is the seam for app-wide concerns (chrome, future auth gate / tab bar / deep-link router) and hosts one feature flow today — [`OnboardingFlowView`](takehome/Features/Onboarding/OnboardingFlowView.swift). Each feature owns its own `NavigationStack`, coordinator, and `Route` enum, so adding a feature is a sibling addition — `AppShell` doesn't grow.
+- **Typed navigation via a `Route` protocol** ([`Core/Navigation/Route.swift`](takehome/Core/Navigation/Route.swift)). Each feature's route enum declares its destination view next to the case, with a feature-defined `Context` carrying the dependencies it needs. The destination switch lives in the feature, never in `AppShell`, so a 100-screen app doesn't grow a god-function. Each route still carries forward exactly the data the next step needs — no shared mutable model.
+- **Networking**: `URLSession` async/await + typed `Endpoint<Response>` descriptors. Path strings live in [`APIPaths`](takehome/Core/Networking/APIPaths.swift) so live clients, mock seeds, and tests share one source of truth. `LiveAPIClient` is fully implemented; flipping `AppEnvironment.resolved()` from `.mock` to `.live` is the only switch needed once the backend exists.
 - **Strict concurrency complete**: `SWIFT_VERSION = 6`, `SWIFT_STRICT_CONCURRENCY = complete`, `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`. Data types and services that cross actor boundaries are explicitly `nonisolated`.
 
 ## Module layout
 
 ```
 takehome/
-├── App/                         takehomeApp, RootView, AppEnvironment
+├── App/                         takehomeApp, AppShell, AppEnvironment
 ├── Features/Onboarding/
-│   ├── OnboardingCoordinator    typed-route NavigationStack source-of-truth
-│   ├── OnboardingRoute          camera / voice / success enum
+│   ├── OnboardingFlowView       feature shell: NavigationStack + coordinator + sign-in root
+│   ├── OnboardingCoordinator    typed-route navigation source-of-truth
+│   ├── OnboardingRoute          camera / voice / success enum + Route conformance
 │   ├── SignIn/                  phone field, hero video, ambient audio, OAuth circles
 │   ├── Camera/                  AVCaptureSession-backed selfie capture
 │   ├── Voice/                   record/listening/review state machine + word-by-word highlight
 │   └── Success/                 ID card render, barcode, share sheet, entrance spring
 ├── Core/
 │   ├── Auth/                    AuthService protocol + Live + Mock
-│   ├── Networking/              APIClient + Endpoint + LiveAPIClient + MockAPIClient
+│   ├── Navigation/              feature-agnostic Route protocol
+│   ├── Networking/              APIClient + Endpoint + LiveAPIClient + MockAPIClient + APIPaths
 │   ├── Phone/                   E164 + PhoneNumberFormatter (US impl)
-│   ├── Media/                   CameraService, AudioRecorder, looped AudioPlayer
+│   ├── Media/                   CameraService (live + stub), AudioRecorder (live + stub), looped AudioPlayer
 │   └── Speech/                  SpeechAligner protocol + SFSpeechRecognizer live + timed fake
 ├── DesignSystem/                Color tokens, Font tokens, CapsuleButton, CircleIconButton, ProgressDotsBar, SpringAppear
 └── Resources/                   custom fonts; placeholder slots for hero.mp4 + ambient_loop.m4a
@@ -52,8 +55,8 @@ takehome/
 | [`AuthService`](takehome/Core/Auth/AuthService.swift) | `MockAuthService` validates E.164 + sleeps 600 ms. | `LiveAuthService` calls `POST /v1/auth/phone` through `APIClient`. |
 | [`OnboardingClient`](takehome/Core/Networking/OnboardingClient.swift) | `MockOnboardingClient` echoes the selfie URL as the avatar after 1.2 s. | `LiveOnboardingClient` calls `POST /v1/ai-selves` with the request payload. |
 | [`PhoneNumberFormatter`](takehome/Core/Phone/E164.swift) | `USPhoneNumberFormatter` — US-only format-as-you-type + E.164 parse. | Wrap [PhoneNumberKit](https://github.com/marmelroy/PhoneNumberKit) in a conformer for multi-locale support. |
-| [`CameraService`](takehome/Core/Media/CameraService.swift) | Real `AVCaptureSession` + `UIViewControllerRepresentable` preview on device. The simulator has no camera hardware, so `AppEnvironment` swaps in [`SimulatorCameraService`](takehome/Core/Media/SimulatorCameraService.swift) that generates a placeholder JPG on shutter — the flow runs end-to-end without a physical device. | Same — production-ready as written. |
-| [`AudioRecorder`](takehome/Core/Media/AudioRecorder.swift) | Real `AVAudioRecorder` → m4a in temp dir. | Same. |
+| [`CameraService`](takehome/Core/Media/CameraService.swift) | Real `AVCaptureSession` + `UIViewControllerRepresentable` preview on device. The simulator has no camera hardware and previews/tests shouldn't touch real I/O, so `AppEnvironment` hands `.preview` (and the simulator branch of `.mock`) a [`StubCameraService`](takehome/Core/Media/StubCameraService.swift) that renders a placeholder JPG on shutter. | Same — production-ready as written. |
+| [`AudioRecorder`](takehome/Core/Media/AudioRecorder.swift) | Real `AVAudioRecorder` → m4a in temp dir. `.preview` swaps in [`StubAudioRecorder`](takehome/Core/Media/StubAudioRecorder.swift) so SwiftUI `#Preview` exercises the voice flow without microphone access. | Same. |
 | [`SpeechAligner`](takehome/Core/Speech/SpeechAligner.swift) | `LiveSpeechAligner` (on-device `SFSpeechRecognizer`) by default; `FakeTimedSpeechAligner` in `#Preview`. | Trivial swap to `SpeechAnalyzer` (iOS 26+) inside the same protocol seam — see the comment in `LiveSpeechAligner.swift`. |
 | Hero video / ambient audio | Looped player wiring is real; falls back to a gradient + silence when `hero.mp4` / `ambient_loop.m4a` are missing from [`Resources/Media/`](takehome/Resources/Media/). | Drop the designer's media in those slots. No code change. |
 | Open Messages CTA | Documented no-op (`openMessages` closure on `AppEnvironment`). Logs to console. | Wire to the future Messages module's deep-link. |
@@ -67,7 +70,11 @@ takehome/
 
 **`nonisolated` services + `@MainActor` view models.** With `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, UI types get MainActor for free. Sendable services (`APIClient`, `AuthService`, `OnboardingClient`) are explicitly `nonisolated` so they can be safely shared across tasks.
 
+**Feature-scoped navigation shells with a `Route` protocol.** `AppShell` is the app-level seam (chrome + which feature is active), and every feature owns its own `*FlowView` with its own `NavigationStack`, coordinator, and `Route` enum. The [`Route`](takehome/Core/Navigation/Route.swift) protocol lets each route declare its destination view next to the case, with a feature-defined `Context`, so the destination switch never lives in `AppShell` and a 100-screen app doesn't grow a god-function.
+
 **Typed routes, payload-passing coordinator.** No shared "OnboardingState" object. Each route enum case carries the data the next step needs (`case voice(phone: E164, selfie: URL)`), so it's impossible to land on the success screen without a captured selfie and voice file.
+
+**Hardened `AppEnvironment` default.** The `EnvironmentKey` default is `nil`. Reading `\.app` outside an `.applyAppEnvironment(_:)` subtree traps in RELEASE so a missing wiring fails loudly. DEBUG keeps a `.preview` fallback because SwiftUI's graph-update phase occasionally probes child environments before the modifier finishes propagating, and trapping there is too noisy for day-to-day work.
 
 **On-device speech via `SFSpeechRecognizer`, not `SpeechAnalyzer`.** `SpeechAnalyzer` is iOS 26+ and the longer-term path, but `SFSpeechRecognizer` with `requiresOnDeviceRecognition = true` delivers reliable partial results today across the device + simulator matrix. The protocol seam (`SpeechAligner`) makes a future migration a one-file change.
 
@@ -117,13 +124,19 @@ takehome/
 | Suite | Covers |
 |---|---|
 | [`APIClientContractTests`](takehomeTests/APIClientContractTests.swift) | Stubbed responses, unconfigured endpoints, error propagation, cancellation. |
+| [`APIErrorTests`](takehomeTests/APIErrorTests.swift) | `APIError` `LocalizedError` descriptions for each case. |
+| [`EndpointBuilderTests`](takehomeTests/EndpointBuilderTests.swift) | `Endpoint.json` body encoding, method/path round-trip, decode failure. |
+| [`IDCardCodableTests`](takehomeTests/IDCardCodableTests.swift) | `IDCard.canned` round-trips through the shared snake-case encoder. |
+| [`LiveServiceTests`](takehomeTests/LiveServiceTests.swift) | Live auth + onboarding clients post to the right `APIPaths`. |
 | [`E164ValidationTests`](takehomeTests/E164ValidationTests.swift) | US format-as-you-type + parse rules. |
+| [`ScriptTokenizerTests`](takehomeTests/ScriptTokenizerTests.swift) | Token boundaries / empty input edge cases for the voice script. |
+| [`OnboardingCoordinatorTests`](takehomeTests/OnboardingCoordinatorTests.swift) | Route payload threading, reset, hashable distinctness. |
 | [`SignInViewModelTests`](takehomeTests/SignInViewModelTests.swift) | Happy path advances; auth failure surfaces error; invalid phone short-circuits. |
 | [`CameraViewModelTests`](takehomeTests/CameraViewModelTests.swift) | Capture happy path; permission denied; capture failure. |
 | [`VoiceRecordViewModelTests`](takehomeTests/VoiceRecordViewModelTests.swift) | Idle → listening → review phase walk; recorder failure; re-record reset. |
-| [`SuccessViewModelTests`](takehomeTests/SuccessViewModelTests.swift) | Loaded state with canned card; error state when client fails. |
+| [`SuccessViewModelTests`](takehomeTests/SuccessViewModelTests.swift) | Loaded state with canned card; error state when client fails; phone threaded into the API request. |
 
-All 21 tests run against the mock services — no network, no microphone, no camera. They double as living documentation of the seam contract.
+All 61 tests run against the mock services — no network, no microphone, no camera. They double as living documentation of the seam contract. The lone XCUITest in [`takehomeUITests/`](takehomeUITests/takehomeUITests.swift) launches the host app and asserts the sign-in hero is reachable.
 
 ## Assets
 

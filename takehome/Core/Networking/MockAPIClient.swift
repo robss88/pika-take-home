@@ -24,8 +24,8 @@ nonisolated final class MockAPIClient: APIClient, Sendable {
     /// and the simulator both work end-to-end without manual wiring.
     static func preloaded() -> MockAPIClient {
         let client = MockAPIClient()
-        client.stubJSON(.post, "/v1/auth/phone", with: AuthToken(value: "mock-token"))
-        client.stubJSON(.post, "/v1/ai-selves", with: IDCard.canned)
+        client.stubJSON(.post, APIPaths.signIn, with: AuthToken(value: "mock-token"))
+        client.stubJSON(.post, APIPaths.createAISelf, with: IDCard.canned)
         return client
     }
 

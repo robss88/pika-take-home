@@ -1,13 +1,14 @@
-#if targetEnvironment(simulator)
 @preconcurrency import AVFoundation
 import SwiftUI
 import UIKit
 
-/// Drop-in replacement for `AVCameraService` when running on the simulator
-/// (which has no real camera). The shutter generates a placeholder JPG so
-/// the rest of the flow exercises end-to-end without a physical device.
+/// I/O-free stand-in for `AVCameraService`. Used wherever a real
+/// `AVCaptureSession` is unavailable or unwanted: the iOS simulator (no
+/// camera hardware), SwiftUI `#Preview`, and tests. The shutter renders a
+/// placeholder JPG to the temp dir so the rest of the flow exercises
+/// end-to-end without a physical device.
 @MainActor
-final class SimulatorCameraService: CameraService {
+final class StubCameraService: CameraService {
     let previewLayer = AVCaptureVideoPreviewLayer()
     private(set) var isRunning: Bool = false
     private var faceUp: Bool = true
@@ -42,7 +43,7 @@ final class SimulatorCameraService: CameraService {
             icon?.draw(in: rect.insetBy(dx: size.width * 0.18, dy: size.height * 0.18))
         }
         let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("sim-selfie-\(UUID().uuidString).jpg")
+            .appendingPathComponent("stub-selfie-\(UUID().uuidString).jpg")
         guard let data = image.jpegData(compressionQuality: 0.9) else {
             throw CameraError.captureFailed
         }
@@ -51,4 +52,3 @@ final class SimulatorCameraService: CameraService {
         return url
     }
 }
-#endif

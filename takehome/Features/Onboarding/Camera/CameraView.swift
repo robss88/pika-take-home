@@ -67,7 +67,7 @@ struct CameraView: View {
 #Preview {
     CameraView(
         viewModel: CameraViewModel(
-            cameraService: AVCameraService(),
+            cameraService: AppEnvironment.preview.cameraServiceFactory(),
             phone: E164(countryCode: "1", national: "2025550123"),
             onCaptured: { _ in },
             onBack: { }

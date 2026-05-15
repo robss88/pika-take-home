@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct SignInView: View {
+    /// Bundled ambient bed for the sign-in hero. Falls back to silence if the
+    /// asset is missing — see `AudioPlayer.loop(bundleResource:withExtension:)`.
+    private static let ambientResource = (name: "ambient_loop", ext: "m4a")
+
+    @Environment(\.app) private var app
     @State var viewModel: SignInViewModel
-    @State private var ambientPlayer = AudioPlayer()
+    @State private var ambientPlayer: AudioPlayer?
 
     var body: some View {
         ZStack {
@@ -19,9 +24,17 @@ struct SignInView: View {
             }
         }
         .onAppear {
-            ambientPlayer.loop(bundleResource: "ambient_loop", withExtension: "m4a")
+            let player = app.audioPlayerFactory()
+            player.loop(
+                bundleResource: Self.ambientResource.name,
+                withExtension: Self.ambientResource.ext
+            )
+            ambientPlayer = player
         }
-        .onDisappear { ambientPlayer.stop() }
+        .onDisappear {
+            ambientPlayer?.stop()
+            ambientPlayer = nil
+        }
     }
 
     private var hero: some View {
@@ -109,8 +122,8 @@ struct SignInView: View {
 #Preview {
     SignInView(
         viewModel: SignInViewModel(
-            auth: MockAuthService(),
-            phoneFormatter: USPhoneNumberFormatter(),
+            auth: AppEnvironment.preview.auth,
+            phoneFormatter: AppEnvironment.preview.phoneFormatter,
             onSignedIn: { _ in }
         )
     )
