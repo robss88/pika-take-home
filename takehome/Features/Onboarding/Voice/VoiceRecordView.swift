@@ -7,9 +7,9 @@ struct VoiceRecordView: View {
         ZStack {
             Color.semiOffWhite.ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                ProgressDotsBar(step: 1, total: 3, onBack: viewModel.back)
-                    .padding(.top, 8)
+            VStack(spacing: Spacing.xl) {
+                TopProgressBar(step: 1, total: 3, onBack: viewModel.back)
+                    .padding(.top, Spacing.sm)
 
                 VoiceIntroHeader()
                     .springAppear()
@@ -20,7 +20,7 @@ struct VoiceRecordView: View {
                     tokens: viewModel.tokens,
                     highlightedIndex: viewModel.highlightedIndex
                 )
-                .padding(.horizontal, 32)
+                .padding(.horizontal, Spacing.xxl)
 
                 Spacer(minLength: 0)
 
@@ -29,14 +29,14 @@ struct VoiceRecordView: View {
                         .font(.semiBody(12))
                         .foregroundStyle(.red.opacity(0.85))
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 24)
+                        .padding(.horizontal, Spacing.xl)
                 }
 
                 if viewModel.phase == .listening {
                     Text("Listening…")
                         .font(.semiBody(13))
-                        .foregroundStyle(Color.semiInk.opacity(0.6))
-                        .padding(.bottom, 4)
+                        .foregroundStyle(Color.textSecondary)
+                        .padding(.bottom, Spacing.xxs)
                         .transition(.opacity)
                 }
 
@@ -47,7 +47,7 @@ struct VoiceRecordView: View {
                     onAccept: viewModel.accept,
                     onPlay: { Task { await viewModel.playBack() } }
                 )
-                .padding(.bottom, 36)
+                .padding(.bottom, Spacing.xxl)
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.85), value: viewModel.phase)

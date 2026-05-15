@@ -7,14 +7,14 @@ struct CameraFailureBlocker: View {
     let message: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundStyle(.white)
             Text(message)
                 .font(.semiBody(14))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 24)
+                .padding(.horizontal, Spacing.xl)
         }
     }
 }

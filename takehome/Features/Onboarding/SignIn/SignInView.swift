@@ -56,7 +56,7 @@ struct SignInView: View {
     }
 
     private var form: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             heading.springAppear(delay: 0.05)
             phoneInput.springAppear(delay: 0.15)
             continueButton.springAppear(delay: 0.2)
@@ -70,23 +70,25 @@ struct SignInView: View {
         }
         .multilineTextAlignment(.center)
         .font(.semiBody(13))
-        .foregroundStyle(Color.semiInk.opacity(0.7))
-        .padding(.horizontal, 24)
-        .padding(.bottom, 24)
+        .foregroundStyle(Color.textTertiary)
+        .padding(.horizontal, Spacing.xl)
+        .padding(.bottom, Spacing.xl)
         .background { heroFrostedOverlay }
     }
 
     private var heading: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Spacing.md) {
             Text("YOUR AI SELF IS\nWAITING")
                 .multilineTextAlignment(.center)
                 .font(.semiDisplay(32))
                 .foregroundStyle(Color.semiInk)
                 .lineSpacing(2)
                 .minimumScaleFactor(0.7)
+                .shadow(color: .white.opacity(0.5), radius: 32, x: 0, y: 1)
             Text("Sign up or log in below")
                 .font(.semiBody(14))
                 .foregroundStyle(Color.semiInk.opacity(0.55))
+                .shadow(color: .white.opacity(0.5), radius: 32, x: 0, y: 1)
         }
     }
 
@@ -118,9 +120,9 @@ struct SignInView: View {
     }
 
     private var termsFooter: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xxs) {
             Text("Sign in to agree to")
-            Text("terms").bold().underline()
+            Text("terms").fontWeight(.semibold)
         }
     }
 }

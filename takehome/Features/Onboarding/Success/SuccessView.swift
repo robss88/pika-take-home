@@ -35,44 +35,44 @@ struct SuccessView: View {
         HStack {
             Spacer()
             CircleIconButton(systemName: "xmark", size: 36, action: viewModel.dismiss)
-                .padding(.top, 8)
-                .padding(.trailing, 16)
+                .padding(.top, Spacing.sm)
+                .padding(.trailing, Spacing.lg)
         }
     }
 
     private var title: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Text("MEET SEMI")
                 .font(.semiDisplay(38))
                 .foregroundStyle(Color.semiInk)
             Text("Your AI Self is ready to chat")
                 .font(.semiBody(14))
-                .foregroundStyle(Color.semiInk.opacity(0.6))
+                .foregroundStyle(Color.textSecondary)
         }
-        .padding(.top, 24)
+        .padding(.top, Spacing.xl)
         .springAppear(delay: 0.2)
     }
 
     private var ctas: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Spacing.md) {
             CapsuleButton(style: .primaryDark, action: viewModel.openMessages) {
-                HStack(spacing: 6) {
+                HStack(spacing: Spacing.xs) {
                     Text("Open Messages")
                     Image(systemName: "arrow.up.right")
                         .font(.system(size: 14, weight: .semibold))
                 }
             }
             CapsuleButton(style: .secondaryOffWhite, action: { viewModel.showShare = true }) {
-                HStack(spacing: 6) {
+                HStack(spacing: Spacing.xs) {
                     Text("Share ID Card")
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 14, weight: .semibold))
                 }
             }
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 28)
-        .padding(.bottom, 28)
+        .padding(.horizontal, Spacing.xl)
+        .padding(.top, Spacing.xl + 4)
+        .padding(.bottom, Spacing.xl + 4)
         .springAppear(delay: 0.3)
     }
 
@@ -80,7 +80,7 @@ struct SuccessView: View {
         let renderer = ImageRenderer(
             content: IDCardView(card: card, localAvatarURL: viewModel.selfieURL)
                 .frame(width: 360)
-                .padding(20)
+                .padding(Spacing.xl - 4)
                 .background(Color.semiOffWhite)
         )
         renderer.scale = UITraitCollection.current.displayScale

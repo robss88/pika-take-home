@@ -20,12 +20,12 @@ struct IDCardLoadStateView: View {
     }
 
     private var loadingView: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Spacing.md) {
             ProgressView()
                 .controlSize(.large)
             Text("Building your AI Self…")
                 .font(.semiBody(13))
-                .foregroundStyle(Color.semiInk.opacity(0.6))
+                .foregroundStyle(Color.textSecondary)
         }
         .frame(height: 280)
     }
@@ -47,14 +47,14 @@ struct IDCardLoadStateView: View {
     }
 
     private func errorView(message: String) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundStyle(Color.semiInk)
             Text(message)
                 .multilineTextAlignment(.center)
                 .font(.semiBody(13))
-                .foregroundStyle(Color.semiInk.opacity(0.7))
-                .padding(.horizontal, 32)
+                .foregroundStyle(Color.textTertiary)
+                .padding(.horizontal, Spacing.xxl)
         }
         .frame(height: 280)
     }

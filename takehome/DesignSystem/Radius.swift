@@ -1,8 +1,8 @@
 import CoreGraphics
 
-/// Corner-radius tokens. Pulled from the Figma source so individual components
-/// don't drift away from the design system — change once, propagates.
+/// Corner-radius tokens, named to match Figma's `Radius/*` scale. Components
+/// reference these so a Figma rename ripples through a single file.
 enum Radius {
-    /// Standard control corner (buttons, fields, cards). 18pt per Figma.
-    static let control: CGFloat = 18
+    /// Standard control corner (buttons, fields, back chip). 18pt per Figma.
+    static let lg: CGFloat = 18
 }

@@ -19,9 +19,15 @@ struct CameraView: View {
             }
 
             VStack {
-                ProgressDotsBar(step: 0, total: 3, onBack: viewModel.back)
-                    .padding(.top, 8)
-                    .tint(.white)
+                TopProgressBar(
+                    step: 0,
+                    total: 3,
+                    tint: .white,
+                    track: Color.white.opacity(0.3),
+                    arrowColor: .white,
+                    onBack: viewModel.back
+                )
+                .padding(.top, Spacing.sm)
 
                 Spacer()
 
@@ -34,7 +40,7 @@ struct CameraView: View {
                     onShutter: { Task { await viewModel.capture() } },
                     onFlip: viewModel.flip
                 )
-                .padding(.bottom, 32)
+                .padding(.bottom, Spacing.xxl)
             }
         }
         .animation(.easeInOut(duration: 0.12), value: viewModel.showFlash)

@@ -27,10 +27,10 @@ struct IDCardView: View {
 
             Rectangle()
                 .fill(Color.semiInk)
-                .frame(height: 1)
-                .padding(.vertical, 8)
+                .frame(height: Size.hairline)
+                .padding(.vertical, Spacing.sm)
 
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .top, spacing: Spacing.md) {
                 VStack(alignment: .leading, spacing: 10) {
                     field(label: "BORN ON PIKA", value: card.bornOn)
                     field(label: "LOCATION", value: card.location)
@@ -46,13 +46,13 @@ struct IDCardView: View {
                     .frame(width: 60, height: 110)
             }
         }
-        .padding(20)
+        .padding(Spacing.xl - 4)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(red: 0.965, green: 0.945, blue: 0.918))
+                .fill(Color.semiOffWhite)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .strokeBorder(Color.semiInk.opacity(0.08), lineWidth: 1)
+                        .strokeBorder(Color.semiInk.opacity(0.08), lineWidth: Size.hairline)
                 )
                 .shadow(color: Color.semiInk.opacity(0.08), radius: 18, x: 0, y: 8)
         )

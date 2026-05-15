@@ -3,7 +3,7 @@ import SwiftUI
 /// Title + subtitle block that anchors the voice-recording screen.
 struct VoiceIntroHeader: View {
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Spacing.md) {
             Text("MAKE YOUR\nAI SELF SOUND\nLIKE YOU")
                 .multilineTextAlignment(.center)
                 .font(.semiDisplay(34))
@@ -15,6 +15,6 @@ struct VoiceIntroHeader: View {
                 .font(.semiBody(13))
                 .foregroundStyle(Color.semiInk.opacity(0.55))
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, Spacing.xl)
     }
 }

@@ -12,30 +12,40 @@ struct PhoneNumberField: View {
     var placeholder: String = "Phone number"
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xxs) {
             CountryPrefixBadge(flag: countryFlag, dialCode: dialCode)
 
-            TextField(
-                "",
-                text: $text,
-                prompt: Text(placeholder)
-                    .foregroundStyle(Color.semiInk.opacity(0.35)),
-            )
-            .keyboardType(.numberPad)
-            .focused($focused)
-            .font(.semiBody(16))
-            .foregroundStyle(Color.semiInk)
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .multilineTextAlignment(.leading)
-            
+            // Placeholder floats centered behind the field; the TextField
+            // itself is always left-aligned so the caret doesn't jump on the
+            // first keystroke. Once `text` is non-empty the overlay drops out
+            // and the typed text replaces it in the same leading position.
+            ZStack {
+                if text.isEmpty {
+                    Text(placeholder)
+                        .font(.semiBody(17))
+                        .foregroundStyle(Color.semiInk.opacity(0.35))
+                        .frame(maxWidth: .infinity)
+                        .allowsHitTesting(false)
+                }
+                TextField("", text: $text)
+                    .keyboardType(.numberPad)
+                    .focused($focused)
+                    .font(.semiBody(17))
+                    .foregroundStyle(Color.semiInk)
+                    .multilineTextAlignment(.leading)
+                    .padding(.leading, Spacing.xs)
+            }
+            .frame(maxWidth: .infinity, minHeight: Size.controlHeightCompact)
         }
-        .padding(.horizontal, 6)
-        .frame(height: 56)
-        .background(Color.semiInk.opacity(0.05), in: .rect(cornerRadius: Radius.control))
+        .padding(.horizontal, Spacing.xs)
+        .frame(height: Size.controlHeight)
+        .background(Color.surfaceDark6, in: .rect(cornerRadius: Radius.lg))
         .overlay(
-            RoundedRectangle(cornerRadius: Radius.control)
-                .strokeBorder(Color.semiInk.opacity(0.25), lineWidth: 1)
+            RoundedRectangle(cornerRadius: Radius.lg)
+                .strokeBorder(Color.semiInk.opacity(0.04), lineWidth: Size.hairline)
         )
+        .contentShape(.rect(cornerRadius: Radius.lg))
+        .onTapGesture { focused = true }
     }
 }
 
@@ -44,14 +54,14 @@ private struct CountryPrefixBadge: View {
     let dialCode: String
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: Spacing.xs) {
             Text(flag).font(.system(size: 18))
             Text(dialCode)
-                .font(.semiMono(14))
-                .foregroundStyle(Color.semiInk.opacity(0.7))
+                .font(.semiMonoRegular(16))
+                .foregroundStyle(Color.textTertiary)
         }
-        .padding(.horizontal, 10)
-        .frame(height: 44)
-        .background(Color.semiFieldFill.opacity(0.9), in: .rect(cornerRadius: Radius.control - 4))
+        .padding(.horizontal, Spacing.sm)
+        .frame(height: Size.controlHeightCompact)
+        .background(Color.semiFieldFill.opacity(0.9), in: .rect(cornerRadius: Radius.lg - 4))
     }
 }

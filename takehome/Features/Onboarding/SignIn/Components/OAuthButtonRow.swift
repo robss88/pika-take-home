@@ -7,17 +7,17 @@ struct OAuthButtonRow: View {
     let onEmail: () -> Void
 
     var body: some View {
-        HStack(spacing: 18) {
+        HStack(spacing: Spacing.lg) {
             CircleIconButton(
                 assetName: "GoogleIcon",
-                size: 52,
-                fill: Color.semiFieldFill,
+                size: Size.oauthButton,
+                fill: Color.surfaceDark6,
                 action: onGoogle
             )
             CircleIconButton(
                 assetName: "EmailIcon",
-                size: 52,
-                fill: Color.semiFieldFill,
+                size: Size.oauthButton,
+                fill: Color.surfaceDark6,
                 action: onEmail
             )
         }

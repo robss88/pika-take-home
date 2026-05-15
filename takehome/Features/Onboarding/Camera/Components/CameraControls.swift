@@ -12,7 +12,7 @@ struct CameraControls: View {
         HStack {
             CircleIconButton(
                 systemName: "photo",
-                size: 56,
+                size: Size.controlHeight,
                 tint: .white,
                 fill: Color.white.opacity(0.18),
                 action: onLibrary
@@ -26,12 +26,12 @@ struct CameraControls: View {
             Spacer()
             CircleIconButton(
                 systemName: "arrow.triangle.2.circlepath",
-                size: 56,
+                size: Size.controlHeight,
                 tint: .white,
                 fill: Color.white.opacity(0.18),
                 action: onFlip
             )
         }
-        .padding(.horizontal, 32)
+        .padding(.horizontal, Spacing.xxl)
     }
 }

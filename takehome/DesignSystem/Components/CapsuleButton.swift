@@ -28,16 +28,17 @@ struct CapsuleButton<Label: View>: View {
     var body: some View {
         Button(action: action) {
             label()
-                .font(.semiTitle(17))
+                .font(.semiBodyMedium(17))
+                .lineLimit(1)
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
+                .frame(height: Size.controlHeight)
                 .foregroundStyle(textColor)
-                .background(backgroundColor, in: .rect(cornerRadius: Radius.control))
+                .background(backgroundColor, in: .rect(cornerRadius: Radius.lg))
                 .opacity(isEnabled ? 1 : 0.45)
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled)
-        .contentShape(.rect(cornerRadius: Radius.control))
+        .contentShape(.rect(cornerRadius: Radius.lg))
     }
 
     private var textColor: Color {
