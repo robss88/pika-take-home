@@ -10,7 +10,7 @@ extension Color {
     /// Pale lavender for the un-spoken script state and subtle accents.
     static let semiPurpleSoft = Color(red: 0.831, green: 0.804, blue: 0.965)
     /// Near-black for hero CTAs, body, and the ID card stroke.
-    static let semiInk = Color(red: 0.075, green: 0.067, blue: 0.090)
+    static let semiInk = Color(red: 13/255, green: 13/255, blue: 13/255)
     /// Slightly warm secondary background (Share ID Card CTA).
     static let semiCream = Color(red: 0.929, green: 0.910, blue: 0.875)
     /// Subdued field background.

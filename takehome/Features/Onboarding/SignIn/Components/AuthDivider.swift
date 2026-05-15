@@ -8,7 +8,7 @@ struct AuthDivider: View {
         HStack(spacing: 12) {
             line
             Text(label)
-                .font(.semiBody(11))
+                .font(.semiBodyMedium(12))
                 .foregroundStyle(Color.semiInk.opacity(0.5))
                 .fixedSize(horizontal: true, vertical: false)
             line

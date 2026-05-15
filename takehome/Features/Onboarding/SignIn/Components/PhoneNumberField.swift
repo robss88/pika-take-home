@@ -31,10 +31,10 @@ struct PhoneNumberField: View {
         }
         .padding(.horizontal, 6)
         .frame(height: 56)
-        .background(Color.semiFieldFill, in: .rect(cornerRadius: Radius.control))
+        .background(Color.semiInk.opacity(0.05), in: .rect(cornerRadius: Radius.control))
         .overlay(
             RoundedRectangle(cornerRadius: Radius.control)
-                .strokeBorder(Color.semiInk.opacity(0.04), lineWidth: 1)
+                .strokeBorder(Color.semiInk.opacity(0.25), lineWidth: 1)
         )
     }
 }
