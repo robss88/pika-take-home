@@ -1,54 +1,58 @@
 import SwiftUI
 
 struct SignInView: View {
-    /// Bundled ambient bed for the sign-in hero. Falls back to silence if the
-    /// asset is missing — see `AudioPlayer.loop(bundleResource:withExtension:)`.
-    private static let ambientResource = (name: "ambient_loop", ext: "m4a")
+    /// Bottom edge of the visible video (fraction of screen height), aligned
+    /// with the top of the "Or continue with" divider.
+    private static let videoBottom: Double = 0.80
 
-    @Environment(\.app) private var app
     @State var viewModel: SignInViewModel
-    @State private var ambientPlayer: AudioPlayer?
+    @FocusState private var phoneFocused: Bool
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             Color.semiOffWhite.ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                hero
-                Spacer(minLength: 8)
-                form
-            }
+            heroBackground
+            form
 
             if let error = viewModel.error {
                 TopErrorBanner(text: error)
             }
         }
-        .onAppear {
-            let player = app.audioPlayerFactory()
-            player.loop(
-                bundleResource: Self.ambientResource.name,
-                withExtension: Self.ambientResource.ext
-            )
-            ambientPlayer = player
-        }
-        .onDisappear {
-            ambientPlayer?.stop()
-            ambientPlayer = nil
-        }
+        .dismissKeyboardOnTap()
     }
 
-    private var hero: some View {
+    private var heroBackground: some View {
         HeroVideoView()
-            .frame(maxWidth: .infinity)
-            .frame(height: 380)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .mask(
                 LinearGradient(
-                    colors: [.black, .black, .black, .clear],
+                    stops: [
+                        .init(color: .black, location: Self.videoBottom),
+                        .init(color: .clear, location: Self.videoBottom),
+                    ],
                     startPoint: .top,
                     endPoint: .bottom
                 )
             )
+            .ignoresSafeArea()
             .springAppear(distance: 18)
+    }
+
+    private var heroFrostedOverlay: some View {
+        Rectangle()
+            .fill(.thinMaterial)
+            .mask(
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0.0),
+                        .init(color: .black, location: 0.2),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .ignoresSafeArea(edges: .bottom)
+            .allowsHitTesting(false)
     }
 
     private var form: some View {
@@ -69,6 +73,7 @@ struct SignInView: View {
         .foregroundStyle(Color.semiInk.opacity(0.7))
         .padding(.horizontal, 24)
         .padding(.bottom, 24)
+        .background { heroFrostedOverlay }
     }
 
     private var heading: some View {
@@ -90,7 +95,8 @@ struct SignInView: View {
             text: Binding(
                 get: { viewModel.phoneText },
                 set: { viewModel.updatePhone($0) }
-            )
+            ),
+            focused: $phoneFocused
         )
     }
 

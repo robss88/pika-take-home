@@ -32,12 +32,12 @@ struct CapsuleButton<Label: View>: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
                 .foregroundStyle(textColor)
-                .background(backgroundColor, in: .capsule)
+                .background(backgroundColor, in: .rect(cornerRadius: Radius.control))
                 .opacity(isEnabled ? 1 : 0.45)
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled)
-        .contentShape(.capsule)
+        .contentShape(.rect(cornerRadius: Radius.control))
     }
 
     private var textColor: Color {

@@ -9,13 +9,13 @@ struct OAuthButtonRow: View {
     var body: some View {
         HStack(spacing: 18) {
             CircleIconButton(
-                systemName: "g.circle",
+                assetName: "GoogleIcon",
                 size: 52,
                 fill: Color.semiFieldFill,
                 action: onGoogle
             )
             CircleIconButton(
-                systemName: "envelope",
+                assetName: "EmailIcon",
                 size: 52,
                 fill: Color.semiFieldFill,
                 action: onEmail
