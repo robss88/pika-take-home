@@ -61,7 +61,7 @@ struct CircleIconButton: View {
             Image(name)
                 .resizable()
                 .scaledToFit()
-                .frame(width: size * 0.5, height: size * 0.5)
+                .frame(width: size, height: size)
         }
     }
 }
