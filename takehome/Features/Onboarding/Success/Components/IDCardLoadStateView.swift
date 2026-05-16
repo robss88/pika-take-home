@@ -41,7 +41,7 @@ struct IDCardLoadStateView: View {
                 axis: (x: 1, y: 0, z: 0)
             )
             .onAppear {
-                withAnimation(.spring(response: 0.65, dampingFraction: 0.72)) {
+                withAnimation(Motion.heroEntrance) {
                     cardAppeared = true
                 }
             }

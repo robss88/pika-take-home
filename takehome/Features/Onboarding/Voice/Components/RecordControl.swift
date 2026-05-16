@@ -30,10 +30,7 @@ struct RecordControl: View {
                         .frame(width: Self.pulseRingSize, height: Self.pulseRingSize)
                         .scaleEffect(pulse)
                         .opacity(pulseOpacity)
-                        .animation(
-                            .easeInOut(duration: 1.2).repeatForever(autoreverses: true),
-                            value: phase
-                        )
+                        .animation(Motion.pulse, value: phase)
                     singleButton(filled: true, icon: nil, dotShown: false, action: onRecord)
                 }
                 .transition(.opacity)
@@ -42,7 +39,7 @@ struct RecordControl: View {
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
             }
         }
-        .animation(.spring(response: 0.45, dampingFraction: 0.78), value: phase)
+        .animation(Motion.recordMorph, value: phase)
     }
 
     private func singleButton(

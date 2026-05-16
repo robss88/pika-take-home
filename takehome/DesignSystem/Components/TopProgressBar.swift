@@ -21,7 +21,7 @@ struct TopProgressBar: View {
                     Capsule()
                         .fill(tint)
                         .frame(width: geo.size.width * progress)
-                        .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
+                        .animation(Motion.progressFill, value: step)
                 }
             }
             .frame(height: Size.progressBarThickness)

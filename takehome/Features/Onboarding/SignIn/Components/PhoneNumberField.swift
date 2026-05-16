@@ -57,7 +57,7 @@ struct PhoneNumberField: View {
         )
         .contentShape(.rect(cornerRadius: Radius.lg))
         .onTapGesture { focused = true }
-        .animation(.easeInOut(duration: 0.2), value: text.isEmpty)
+        .animation(Motion.fade, value: text.isEmpty)
         .onAppear { localText = text }
         .onChange(of: localText) { _, new in
             // Hard-cap by country: drop the keystroke before it propagates.

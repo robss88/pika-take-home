@@ -15,7 +15,7 @@ struct ShutterButton: View {
                     .fill(Color.white)
                     .frame(width: 72, height: 72)  // inner ring — shutter-internal
                     .scaleEffect(isCapturing ? 0.85 : 1.0)
-                    .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isCapturing)
+                    .animation(Motion.press, value: isCapturing)
             }
         }
         .buttonStyle(.plain)

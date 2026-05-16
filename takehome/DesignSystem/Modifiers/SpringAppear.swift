@@ -18,7 +18,7 @@ private struct SpringAppearModifier: ViewModifier {
             .opacity(visible ? 1 : 0)
             .offset(y: visible ? 0 : distance)
             .onAppear {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.82).delay(delay)) {
+                withAnimation(Motion.entrance.delay(delay)) {
                     visible = true
                 }
             }

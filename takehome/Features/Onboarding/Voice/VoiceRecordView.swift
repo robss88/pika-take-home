@@ -50,7 +50,7 @@ struct VoiceRecordView: View {
                 .padding(.bottom, Spacing.xxl)
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: viewModel.phase)
+        .animation(Motion.voicePhase, value: viewModel.phase)
     }
 }
 

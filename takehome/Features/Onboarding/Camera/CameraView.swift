@@ -10,7 +10,7 @@ struct CameraView: View {
             preview
                 .ignoresSafeArea()
                 .opacity(viewModel.phase == .ready || viewModel.phase == .capturing ? 1 : 0)
-                .animation(.easeOut(duration: 0.2), value: viewModel.phase)
+                .animation(Motion.cameraFade, value: viewModel.phase)
 
             if viewModel.showFlash {
                 Color.white
@@ -43,7 +43,7 @@ struct CameraView: View {
                 .padding(.bottom, Spacing.xxl)
             }
         }
-        .animation(.easeInOut(duration: 0.12), value: viewModel.showFlash)
+        .animation(Motion.flash, value: viewModel.showFlash)
         .task { await viewModel.start() }
         .onDisappear { viewModel.stop() }
     }

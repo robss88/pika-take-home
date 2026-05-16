@@ -9,7 +9,7 @@ struct ScriptHighlightView: View {
             Text(tokens[index].display + " ")
                 .font(.semiDisplay(28))
                 .foregroundStyle(color(for: index))
-                .animation(.easeOut(duration: 0.22), value: highlightedIndex)
+                .animation(Motion.highlight, value: highlightedIndex)
         }
         .multilineTextAlignment(.center)
     }
