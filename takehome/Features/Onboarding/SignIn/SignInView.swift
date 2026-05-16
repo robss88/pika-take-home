@@ -18,7 +18,6 @@ struct SignInView: View {
                 TopErrorBanner(text: error)
             }
         }
-        .dismissKeyboardOnTap()
     }
 
     private var heroBackground: some View {
@@ -39,6 +38,12 @@ struct SignInView: View {
             // the form when the keyboard opens.
             .ignoresSafeArea(.container, edges: .all)
             .springAppear(distance: 18)
+            // Tap-to-dismiss lives on the hero (and any form whitespace that
+            // falls through to it), NOT on the root ZStack. If it were on the
+            // root, the phone field's own tap-to-focus would race with the
+            // parent's simultaneousGesture and a second tap would dismiss the
+            // keyboard instead of re-focusing.
+            .dismissKeyboardOnTap()
     }
 
     private var heroFrostedOverlay: some View {
