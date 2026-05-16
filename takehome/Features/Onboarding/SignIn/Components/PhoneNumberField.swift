@@ -12,21 +12,10 @@ struct PhoneNumberField: View {
     var placeholder: String = "Phone number"
 
     var body: some View {
-        HStack(spacing: Spacing.xxs) {
-            CountryPrefixBadge(flag: countryFlag, dialCode: dialCode)
+        ZStack {
+            HStack(spacing: Spacing.xxs) {
+                CountryPrefixBadge(flag: countryFlag, dialCode: dialCode)
 
-            // Placeholder floats centered behind the field; the TextField
-            // itself is always left-aligned so the caret doesn't jump on the
-            // first keystroke. Once `text` is non-empty the overlay drops out
-            // and the typed text replaces it in the same leading position.
-            ZStack {
-                if text.isEmpty {
-                    Text(placeholder)
-                        .font(.semiBody(17))
-                        .foregroundStyle(Color.semiInk.opacity(0.35))
-                        .frame(maxWidth: .infinity)
-                        .allowsHitTesting(false)
-                }
                 TextField("", text: $text)
                     .keyboardType(.numberPad)
                     .focused($focused)
@@ -35,7 +24,18 @@ struct PhoneNumberField: View {
                     .multilineTextAlignment(.leading)
                     .padding(.leading, Spacing.xs)
             }
-            .frame(maxWidth: .infinity, minHeight: Size.controlHeightCompact)
+
+            // Placeholder floats centered across the *whole* field — not just
+            // the TextField column — so it reads as the field's resting label.
+            // The TextField stays left-aligned so the caret doesn't jump on
+            // the first keystroke; the placeholder fades out as text appears.
+            if text.isEmpty {
+                Text(placeholder)
+                    .font(.semiBody(17))
+                    .foregroundStyle(Color.semiInk.opacity(0.35))
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
         }
         .padding(.horizontal, Spacing.xs)
         .frame(height: Size.controlHeight)
@@ -46,6 +46,7 @@ struct PhoneNumberField: View {
         )
         .contentShape(.rect(cornerRadius: Radius.lg))
         .onTapGesture { focused = true }
+        .animation(.easeInOut(duration: 0.2), value: text.isEmpty)
     }
 }
 

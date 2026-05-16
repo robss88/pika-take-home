@@ -34,7 +34,10 @@ struct SignInView: View {
                     endPoint: .bottom
                 )
             )
-            .ignoresSafeArea()
+            // Container only — extends behind the status bar / home indicator
+            // but still respects the keyboard inset so the video rides up with
+            // the form when the keyboard opens.
+            .ignoresSafeArea(.container, edges: .all)
             .springAppear(distance: 18)
     }
 
