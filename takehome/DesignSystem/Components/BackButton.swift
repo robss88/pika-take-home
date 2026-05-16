@@ -1,10 +1,9 @@
 import SwiftUI
 
-/// 48×48 rounded back chip with a frosted backdrop. Per Figma:
-/// `rgba(13, 13, 13, 0.05)` on top of a 32pt backdrop blur. SwiftUI doesn't
-/// expose blur radius in points, so we map the 32pt Figma blur to
-/// `.regularMaterial` — noticeable softening on a dark backdrop (camera),
-/// gentle frost on light ones (voice / success).
+/// 48×48 rounded back chip. Per Figma: `rgba(13, 13, 13, 0.05)` over a 32pt
+/// backdrop blur. SwiftUI doesn't expose blur radius in points; `.thinMaterial`
+/// is the closest match for "blurred but still see-through" — what's behind
+/// stays legible through the chip.
 struct BackButton: View {
     var arrowColor: Color = .semiInk
     let action: () -> Void
@@ -16,7 +15,7 @@ struct BackButton: View {
                 .foregroundStyle(arrowColor)
                 .frame(width: Size.backButton, height: Size.backButton)
                 .background(Color.surfaceDark6, in: .rect(cornerRadius: Radius.lg))
-                .background(.regularMaterial, in: .rect(cornerRadius: Radius.lg))
+                .background(.thinMaterial, in: .rect(cornerRadius: Radius.lg))
         }
         .buttonStyle(.plain)
         .contentShape(.rect(cornerRadius: Radius.lg))
