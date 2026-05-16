@@ -8,6 +8,9 @@ struct RecordControl: View {
     private static let idleDotSize: CGFloat = 22
     private static let stopSquareSize: CGFloat = 26
     private static let stopSquareCorner: CGFloat = 6
+    /// Review-row side buttons (re-record + play). Smaller than the OAuth
+    /// chip on sign-in so the central accept-checkmark reads as primary.
+    private static let reviewControlSize: CGFloat = 52
 
     let phase: VoiceRecordViewModel.Phase
     let onRecord: () -> Void
@@ -79,8 +82,8 @@ struct RecordControl: View {
         HStack(spacing: Spacing.xlXxl) {
             CircleIconButton(
                 systemName: "arrow.triangle.2.circlepath",
-                size: Size.oauthButton,
-                tint: .semiInk,
+                size: Self.reviewControlSize,
+                tint: .contentDarkTertiary,
                 fill: Color.surfaceDark6,
                 action: onReRecord
             )
@@ -100,8 +103,8 @@ struct RecordControl: View {
 
             CircleIconButton(
                 systemName: phase == .playing ? "stop.fill" : "play.fill",
-                size: Size.oauthButton,
-                tint: .semiInk,
+                size: Self.reviewControlSize,
+                tint: .contentDarkTertiary,
                 fill: Color.surfaceDark6,
                 action: onPlay
             )

@@ -12,12 +12,14 @@ struct OAuthButtonRow: View {
                 assetName: "GoogleIcon",
                 size: Size.oauthButton,
                 fill: Color.surfaceDark6,
+                iconSize: Size.oauthIcon,
                 action: onGoogle
             )
             CircleIconButton(
                 assetName: "EmailIcon",
                 size: Size.oauthButton,
                 fill: Color.surfaceDark6,
+                iconSize: Size.oauthIcon,
                 action: onEmail
             )
         }

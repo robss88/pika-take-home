@@ -29,4 +29,8 @@ extension Color {
     static let textSecondary = semiInk.opacity(0.6)
     /// Tertiary text — ~70% ink, used on subdued labels (e.g. badge dial code).
     static let textTertiary = semiInk.opacity(0.7)
+    /// Figma `Content/Dark/Tertiary` — `rgba(34, 34, 34, 0.6)`. Used on
+    /// review-control icons (play, re-record) where the icon needs to read
+    /// as "interactive but secondary."
+    static let contentDarkTertiary = Color(red: 34/255, green: 34/255, blue: 34/255).opacity(0.6)
 }

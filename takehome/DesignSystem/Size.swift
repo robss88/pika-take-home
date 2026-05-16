@@ -9,8 +9,10 @@ enum Size {
     static let controlHeightCompact: CGFloat = 44
     /// Back chip — Figma 48×48.
     static let backButton: CGFloat = 48
-    /// OAuth circles on sign-in.
-    static let oauthButton: CGFloat = 52
+    /// OAuth circles on sign-in — Figma 64×64.
+    static let oauthButton: CGFloat = 64
+    /// OAuth icon glyph — Figma 24×24 centered inside the 64pt circle.
+    static let oauthIcon: CGFloat = 24
     /// Card slot — IDCardLoadStateView's reserved area for loading / loaded /
     /// error states. Same value used as both height (loading/error) and
     /// max-width (loaded), keeping the card's layout box stable.
