@@ -13,6 +13,7 @@ struct AppEnvironment: Sendable {
     let api: any APIClient
     let auth: any AuthService
     let onboarding: any OnboardingClient
+    let mediaUploader: any MediaUploader
     let phoneFormatter: any PhoneNumberFormatter
     let speechAlignerFactory: @MainActor @Sendable () -> any SpeechAligner
     let cameraServiceFactory: @MainActor @Sendable () -> any CameraService
@@ -47,6 +48,7 @@ struct AppEnvironment: Sendable {
             api: api,
             auth: LiveAuthService(api: api),
             onboarding: LiveOnboardingClient(api: api),
+            mediaUploader: LiveMediaUploader(api: api),
             phoneFormatter: USPhoneNumberFormatter(),
             speechAlignerFactory: { LiveSpeechAligner() },
             cameraServiceFactory: { Self.makeCameraService() },
@@ -65,6 +67,7 @@ struct AppEnvironment: Sendable {
             api: api,
             auth: MockAuthService(),
             onboarding: MockOnboardingClient(),
+            mediaUploader: MockMediaUploader(),
             phoneFormatter: USPhoneNumberFormatter(),
             speechAlignerFactory: { LiveSpeechAligner() },
             cameraServiceFactory: { Self.makeCameraService() },
@@ -85,6 +88,7 @@ struct AppEnvironment: Sendable {
             api: MockAPIClient.preloaded(),
             auth: MockAuthService(),
             onboarding: MockOnboardingClient(),
+            mediaUploader: MockMediaUploader(delay: .zero),
             phoneFormatter: USPhoneNumberFormatter(),
             speechAlignerFactory: { FakeTimedSpeechAligner() },
             cameraServiceFactory: { StubCameraService() },

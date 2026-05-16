@@ -65,8 +65,8 @@ struct SignInView: View {
             continueButton.springAppear(delay: 0.2)
             AuthDivider(label: "Or continue with").springAppear(delay: 0.25)
             OAuthButtonRow(
-                onGoogle: { /* OAuth seam */ },
-                onEmail: { /* OAuth seam */ }
+                onGoogle: { Task { await viewModel.oauth(.google) } },
+                onEmail: { Task { await viewModel.oauth(.email) } }
             )
             .springAppear(delay: 0.25)
             termsFooter

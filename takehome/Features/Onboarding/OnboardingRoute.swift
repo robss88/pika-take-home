@@ -36,6 +36,7 @@ extension OnboardingRoute: @MainActor Route {
                 viewModel: VoiceRecordViewModel(
                     recorder: env.audioRecorderFactory(),
                     aligner: env.speechAlignerFactory(),
+                    uploader: env.mediaUploader,
                     onAccepted: { voice in
                         coordinator.didRecord(voice: voice, phone: phone, selfie: selfie)
                     },

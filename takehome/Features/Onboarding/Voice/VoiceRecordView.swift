@@ -44,7 +44,7 @@ struct VoiceRecordView: View {
                     phase: viewModel.phase,
                     onRecord: { Task { await viewModel.toggleRecord() } },
                     onReRecord: viewModel.reRecord,
-                    onAccept: viewModel.accept,
+                    onAccept: { Task { await viewModel.accept() } },
                     onPlay: { Task { await viewModel.playBack() } }
                 )
                 .padding(.bottom, Spacing.xxl)
@@ -59,6 +59,7 @@ struct VoiceRecordView: View {
         viewModel: VoiceRecordViewModel(
             recorder: AppEnvironment.preview.audioRecorderFactory(),
             aligner: AppEnvironment.preview.speechAlignerFactory(),
+            uploader: AppEnvironment.preview.mediaUploader,
             onAccepted: { _ in },
             onBack: { }
         )

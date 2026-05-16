@@ -47,6 +47,10 @@ final class CameraViewModel {
 
     func stop() {
         cameraService.stop()
+        // Reset back to `.idle` so `start()` is allowed to re-arm the session
+        // when the user navigates back to this screen and wants to retake.
+        phase = .idle
+        showFlash = false
     }
 
     func flip() {

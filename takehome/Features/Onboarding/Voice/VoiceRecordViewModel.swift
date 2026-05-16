@@ -20,10 +20,13 @@ final class VoiceRecordViewModel {
     private(set) var phase: Phase = .idle
     private(set) var highlightedIndex: Int = -1   // -1 means "nothing highlighted yet"
     private(set) var recordingURL: URL? = nil
+    private(set) var isUploading: Bool = false
+    private(set) var uploadedVoiceKey: String? = nil
     var error: String? = nil
 
     private let recorder: any AudioRecorder
     private let aligner: any SpeechAligner
+    private let uploader: any MediaUploader
     private let player = AudioPlayer()
     private var alignmentTask: Task<Void, Never>?
     private let onAccepted: (URL) -> Void
@@ -32,6 +35,7 @@ final class VoiceRecordViewModel {
     init(
         recorder: any AudioRecorder,
         aligner: any SpeechAligner,
+        uploader: any MediaUploader,
         script: String = VoiceRecordViewModel.defaultScript,
         onAccepted: @escaping (URL) -> Void,
         onBack: @escaping () -> Void
@@ -39,6 +43,7 @@ final class VoiceRecordViewModel {
         self.tokens = ScriptTokenizer.tokenize(script)
         self.recorder = recorder
         self.aligner = aligner
+        self.uploader = uploader
         self.onAccepted = onAccepted
         self.onBack = onBack
     }
@@ -60,9 +65,17 @@ final class VoiceRecordViewModel {
         phase = .idle
     }
 
-    func accept() {
-        guard let url = recordingURL else { return }
-        onAccepted(url)
+    func accept() async {
+        guard let url = recordingURL, !isUploading else { return }
+        isUploading = true
+        error = nil
+        defer { isUploading = false }
+        do {
+            uploadedVoiceKey = try await uploader.upload(url, kind: .voice)
+            onAccepted(url)
+        } catch {
+            self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        }
     }
 
     func playBack() async {

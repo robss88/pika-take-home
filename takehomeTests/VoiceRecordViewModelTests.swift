@@ -14,6 +14,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: recorder,
             aligner: aligner,
+            uploader: MockMediaUploader(delay: .zero),
             script: "best self ahead",
             onAccepted: { captured = $0 },
             onBack: { }
@@ -27,8 +28,9 @@ struct VoiceRecordViewModelTests {
         #expect(vm.phase == .review)
         #expect(vm.recordingURL != nil)
 
-        vm.accept()
+        await vm.accept()
         #expect(captured != nil)
+        #expect(vm.uploadedVoiceKey?.hasPrefix("voice/") == true)
     }
 
     @Test func recorder_failure_keeps_phase_idle_and_surfaces_error() async {
@@ -36,6 +38,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: recorder,
             aligner: FakeTimedSpeechAligner(),
+            uploader: MockMediaUploader(delay: .zero),
             script: "best self",
             onAccepted: { _ in Issue.record("should not advance") },
             onBack: { }
@@ -51,6 +54,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: recorder,
             aligner: FakeTimedSpeechAligner(),
+            uploader: MockMediaUploader(delay: .zero),
             script: "best self",
             onAccepted: { _ in },
             onBack: { }
@@ -68,6 +72,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: StubAudioRecorder(),
             aligner: FakeTimedSpeechAligner(),
+            uploader: MockMediaUploader(delay: .zero),
             script: "Hello, world!",
             onAccepted: { _ in },
             onBack: { }
@@ -75,15 +80,16 @@ struct VoiceRecordViewModelTests {
         #expect(vm.tokens.map(\.normalized) == ["hello", "world"])
     }
 
-    @Test func accept_is_noop_without_a_recording() {
+    @Test func accept_is_noop_without_a_recording() async {
         let vm = VoiceRecordViewModel(
             recorder: StubAudioRecorder(),
             aligner: FakeTimedSpeechAligner(),
+            uploader: MockMediaUploader(delay: .zero),
             script: "best self",
             onAccepted: { _ in Issue.record("accept fired without recording") },
             onBack: { }
         )
-        vm.accept()
+        await vm.accept()
         #expect(vm.recordingURL == nil)
     }
 
@@ -92,6 +98,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: StubAudioRecorder(),
             aligner: FakeTimedSpeechAligner(),
+            uploader: MockMediaUploader(delay: .zero),
             script: "best self",
             onAccepted: { _ in },
             onBack: { didBack = true }
@@ -107,6 +114,7 @@ struct VoiceRecordViewModelTests {
         let vm = VoiceRecordViewModel(
             recorder: recorder,
             aligner: aligner,
+            uploader: MockMediaUploader(delay: .zero),
             script: "one two three four",
             onAccepted: { _ in },
             onBack: { }

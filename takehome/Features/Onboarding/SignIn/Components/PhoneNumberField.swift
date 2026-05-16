@@ -11,12 +11,19 @@ struct PhoneNumberField: View {
     var dialCode: String = "+1"
     var placeholder: String = "Phone number"
 
+    /// Mirror of `text` that the TextField writes into directly. The two
+    /// stay in sync via the `onChange` pair below. This keeps the
+    /// caller-side formatter (set via `text`'s binding) from racing with
+    /// the TextField's internal storage mid-edit, which is the SwiftUI
+    /// footgun for format-as-you-type.
+    @State private var localText: String = ""
+
     var body: some View {
         ZStack {
             HStack(spacing: Spacing.xxs) {
                 CountryPrefixBadge(flag: countryFlag, dialCode: dialCode)
 
-                TextField("", text: $text)
+                TextField("", text: $localText)
                     .keyboardType(.numberPad)
                     .focused($focused)
                     .font(.semiBody(17))
@@ -47,6 +54,15 @@ struct PhoneNumberField: View {
         .contentShape(.rect(cornerRadius: Radius.lg))
         .onTapGesture { focused = true }
         .animation(.easeInOut(duration: 0.2), value: text.isEmpty)
+        .onAppear { localText = text }
+        .onChange(of: localText) { _, new in
+            // Push raw edits up to the caller's formatter.
+            if new != text { text = new }
+        }
+        .onChange(of: text) { _, new in
+            // Pull the formatted result back into the field.
+            if new != localText { localText = new }
+        }
     }
 }
 
