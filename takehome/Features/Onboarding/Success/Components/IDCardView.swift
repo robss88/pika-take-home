@@ -13,11 +13,12 @@ struct IDCardView: View {
 
                 Spacer(minLength: 0)
 
-                Image(systemName: "hare.fill")
+                Image("RabbitIcon")
+                    .renderingMode(.template)
                     .resizable()
                     .scaledToFit()
                     .foregroundStyle(Color.semiInk)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 34, height: 26)
             }
 
             Text(card.name)
@@ -41,9 +42,11 @@ struct IDCardView: View {
                 Spacer(minLength: 0)
 
                 BarcodeView(payload: card.barcodePayload)
-                    .frame(width: 80, height: 100)
+                    .frame(width: 130, height: 38)
                     .rotationEffect(.degrees(90))
-                    .frame(width: 60, height: 110)
+                    .frame(width: 38, height: 130)
+                    .blendMode(.multiply)   // drops the generator's white background
+                    .padding(.trailing, Spacing.xxs)
             }
         }
         .padding(Spacing.xl - 4)

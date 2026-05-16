@@ -6,7 +6,7 @@ struct SuccessView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color.semiOffWhite, Color.semiPurpleSoft.opacity(0.35)],
+                colors: [Color.semiOffWhite, Color.semiCream],
                 startPoint: .top,
                 endPoint: .bottom
             )

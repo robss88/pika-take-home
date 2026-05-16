@@ -32,7 +32,8 @@ struct IDCardLoadStateView: View {
 
     private func loadedView(card: IDCard) -> some View {
         IDCardView(card: card, localAvatarURL: localAvatarURL)
-            .frame(maxWidth: 320)
+            .frame(maxWidth: 280)
+            .rotationEffect(.degrees(3))   // slight clockwise slant — top tips right, per Figma
             .scaleEffect(cardAppeared ? 1 : 0.85)
             .opacity(cardAppeared ? 1 : 0)
             .rotation3DEffect(
