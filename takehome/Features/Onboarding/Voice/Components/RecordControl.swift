@@ -81,7 +81,7 @@ struct RecordControl: View {
                 systemName: "arrow.triangle.2.circlepath",
                 size: Size.oauthButton,
                 tint: .semiInk,
-                fill: Color.semiFieldFill,
+                fill: Color.surfaceDark6,
                 action: onReRecord
             )
 
@@ -102,7 +102,7 @@ struct RecordControl: View {
                 systemName: phase == .playing ? "stop.fill" : "play.fill",
                 size: Size.oauthButton,
                 tint: .semiInk,
-                fill: Color.semiFieldFill,
+                fill: Color.surfaceDark6,
                 action: onPlay
             )
         }

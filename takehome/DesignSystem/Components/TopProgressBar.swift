@@ -16,9 +16,9 @@ struct TopProgressBar: View {
     let onBack: () -> Void
 
     var body: some View {
-        HStack(spacing: Spacing.lg) {
-            BackButton(arrowColor: arrowColor, action: onBack)
-
+        ZStack {
+            // Centered track — sits in the middle of the screen regardless
+            // of the back button on the leading edge.
             ZStack(alignment: .leading) {
                 Capsule().fill(track)
                 Capsule()
@@ -28,7 +28,11 @@ struct TopProgressBar: View {
             }
             .frame(width: Self.trackWidth, height: Size.progressBarThickness)
 
-            Spacer(minLength: 0)
+            // Back chip overlaid at the leading edge.
+            HStack {
+                BackButton(arrowColor: arrowColor, action: onBack)
+                Spacer(minLength: 0)
+            }
         }
         .padding(.horizontal, Spacing.xl)
     }

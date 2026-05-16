@@ -96,10 +96,13 @@ final class VoiceRecordViewModel {
         cancelEverything()
         error = nil
         highlightedIndex = -1
+        // Optimistic UI: flip to `.listening` before awaiting the recorder so
+        // the record button morphs immediately on tap. If the recorder fails
+        // (permission denied, session error) we revert to `.idle` and surface
+        // the error.
+        phase = .listening
         do {
-            let url = try await recorder.start()
-            recordingURL = url
-            phase = .listening
+            recordingURL = try await recorder.start()
             startAlignment()
         } catch {
             self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
@@ -111,8 +114,12 @@ final class VoiceRecordViewModel {
         alignmentTask?.cancel()
         alignmentTask = nil
         aligner.cancel()
+        // Optimistic UI: flip to `.review` before awaiting `recorder.stop()`
+        // so the review row appears instantly on tap. If `stop()` somehow
+        // returns nil with no cached URL we revert to `.idle`.
+        phase = .review
         recordingURL = await recorder.stop() ?? recordingURL
-        phase = recordingURL == nil ? .idle : .review
+        if recordingURL == nil { phase = .idle }
     }
 
     private func startAlignment() {

@@ -58,10 +58,13 @@ struct CircleIconButton: View {
                 .font(.system(size: size * 0.42, weight: .medium))
                 .foregroundStyle(tint)
         case .asset(let name):
+            // Asset icons render at ~50% of the button so the circle BG reads
+            // as breathing room — matching the SF-Symbol path (0.42) but a
+            // touch larger because asset glyphs are visually less dense.
             Image(name)
                 .resizable()
                 .scaledToFit()
-                .frame(width: size, height: size)
+                .frame(width: size * 0.5, height: size * 0.5)
         }
     }
 }

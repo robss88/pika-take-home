@@ -62,7 +62,7 @@ struct SuccessView: View {
                         .font(.system(size: 14, weight: .semibold))
                 }
             }
-            CapsuleButton(style: .secondaryOffWhite, action: { viewModel.showShare = true }) {
+            CapsuleButton(style: .secondarySurface, action: { viewModel.showShare = true }) {
                 HStack(spacing: Spacing.xs) {
                     Text("Share ID Card")
                     Image(systemName: "square.and.arrow.up")

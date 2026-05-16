@@ -10,7 +10,6 @@ struct SignInView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Color.semiOffWhite.ignoresSafeArea()
             heroBackground
             form
 
@@ -92,10 +91,14 @@ struct SignInView: View {
                 .foregroundStyle(Color.semiInk)
                 .lineSpacing(2)
                 .minimumScaleFactor(0.7)
-                .shadow(color: .white.opacity(0.5), radius: 32, x: 0, y: 1)
+                // Stacked glow — a tight inner halo + a wider soft bloom
+                // reads as a single luminous outline against the video.
+                .shadow(color: .white.opacity(0.85), radius: 12, x: 0, y: 0)
+                .shadow(color: .white.opacity(0.6), radius: 32, x: 0, y: 1)
             Text("Sign up or log in below")
                 .font(.semiBody(14))
                 .foregroundStyle(Color.semiInk.opacity(0.55))
+                .shadow(color: .white.opacity(0.7), radius: 12, x: 0, y: 0)
                 .shadow(color: .white.opacity(0.5), radius: 32, x: 0, y: 1)
         }
     }
