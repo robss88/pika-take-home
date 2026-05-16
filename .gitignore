@@ -1,1 +1,15 @@
 takehome.xcodeproj
+
+# macOS Finder cache
+**/.DS_Store
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# Derived data (usually outside repo, but defensive)
+DerivedData/

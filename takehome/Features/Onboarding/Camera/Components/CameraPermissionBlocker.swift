@@ -17,8 +17,8 @@ struct CameraPermissionBlocker: View {
             Button("Open Settings", action: openSettings)
                 .font(.semiTitle(14))
                 .foregroundStyle(.white)
-                .padding(.horizontal, Spacing.xl - 4)
-                .padding(.vertical, Spacing.md - 2)
+                .padding(.horizontal, Spacing.lgXl)
+                .padding(.vertical, Spacing.smMd)
                 .background(Color.semiPurpleDeep, in: .capsule)
         }
         .padding(.bottom, Spacing.lg)

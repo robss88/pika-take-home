@@ -1,6 +1,14 @@
 import SwiftUI
 
 struct RecordControl: View {
+    // Component-internal morph constants. Kept private so they don't pollute
+    // the shared DS namespace — they only make sense in this control.
+    private static let pulseRingSize: CGFloat = 92
+    private static let coreSize: CGFloat = 78
+    private static let idleDotSize: CGFloat = 22
+    private static let stopSquareSize: CGFloat = 26
+    private static let stopSquareCorner: CGFloat = 6
+
     let phase: VoiceRecordViewModel.Phase
     let onRecord: () -> Void
     let onReRecord: () -> Void
@@ -19,7 +27,7 @@ struct RecordControl: View {
                 ZStack {
                     Circle()
                         .stroke(Color.semiPurpleSoft, lineWidth: 3)
-                        .frame(width: 92, height: 92)
+                        .frame(width: Self.pulseRingSize, height: Self.pulseRingSize)
                         .scaleEffect(pulse)
                         .opacity(pulseOpacity)
                         .animation(
@@ -47,18 +55,18 @@ struct RecordControl: View {
             ZStack {
                 Circle()
                     .fill(Color.semiLavender)
-                    .frame(width: 78, height: 78)
+                    .frame(width: Self.coreSize, height: Self.coreSize)
                     .matchedGeometryEffect(id: "recordCore", in: morph)
 
                 if dotShown {
                     Circle()
                         .fill(Color.semiInk)
-                        .frame(width: 22, height: 22)
+                        .frame(width: Self.idleDotSize, height: Self.idleDotSize)
                 }
                 if filled {
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    RoundedRectangle(cornerRadius: Self.stopSquareCorner, style: .continuous)
                         .fill(Color.semiPurpleDeep)
-                        .frame(width: 26, height: 26)
+                        .frame(width: Self.stopSquareSize, height: Self.stopSquareSize)
                 }
                 if let icon {
                     Image(systemName: icon)
@@ -71,10 +79,10 @@ struct RecordControl: View {
     }
 
     private var reviewRow: some View {
-        HStack(spacing: 28) {
+        HStack(spacing: Spacing.xlXxl) {
             CircleIconButton(
                 systemName: "arrow.triangle.2.circlepath",
-                size: 52,
+                size: Size.oauthButton,
                 tint: .semiInk,
                 fill: Color.semiFieldFill,
                 action: onReRecord
@@ -84,7 +92,7 @@ struct RecordControl: View {
                 ZStack {
                     Circle()
                         .fill(Color.semiLavender)
-                        .frame(width: 86, height: 86)
+                        .frame(width: Size.primaryAction, height: Size.primaryAction)
                         .matchedGeometryEffect(id: "recordCore", in: morph)
                     Image(systemName: "checkmark")
                         .font(.system(size: 28, weight: .bold))
@@ -95,7 +103,7 @@ struct RecordControl: View {
 
             CircleIconButton(
                 systemName: phase == .playing ? "stop.fill" : "play.fill",
-                size: 52,
+                size: Size.oauthButton,
                 tint: .semiInk,
                 fill: Color.semiFieldFill,
                 action: onPlay

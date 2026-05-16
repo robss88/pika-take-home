@@ -1,10 +1,9 @@
 import SwiftUI
 
 enum CapsuleButtonStyle {
-    case lavender      // big primary on SignIn / Voice accept
-    case primaryDark   // black pill on Success ("Open Messages")
+    case lavender           // big primary on SignIn / Voice accept
+    case primaryDark        // black pill on Success ("Open Messages")
     case secondaryOffWhite  // warm muted ("Share ID Card")
-    case ghost         // outlined / transparent fallback
 }
 
 struct CapsuleButton<Label: View>: View {
@@ -43,19 +42,17 @@ struct CapsuleButton<Label: View>: View {
 
     private var textColor: Color {
         switch style {
-        case .lavender:        return .semiInk
-        case .primaryDark:     return .white
+        case .lavender:          return .semiInk
+        case .primaryDark:       return .white
         case .secondaryOffWhite: return .semiInk
-        case .ghost:           return .semiInk
         }
     }
 
     private var backgroundColor: Color {
         switch style {
-        case .lavender:        return .semiLavender
-        case .primaryDark:     return .semiInk
+        case .lavender:          return .semiLavender
+        case .primaryDark:       return .semiInk
         case .secondaryOffWhite: return .semiCream
-        case .ghost:           return .clear
         }
     }
 }

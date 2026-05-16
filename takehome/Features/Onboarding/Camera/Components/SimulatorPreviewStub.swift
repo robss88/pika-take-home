@@ -8,18 +8,15 @@ struct SimulatorPreviewStub: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [
-                    Color(red: 0.83, green: 0.80, blue: 0.96),
-                    Color(red: 0.97, green: 0.95, blue: 0.92)
-                ],
+                colors: [Color.semiPurpleSoft, Color.semiOffWhite],
                 startPoint: .top,
                 endPoint: .bottom
             )
-            VStack(spacing: 12) {
+            VStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 220)
+                    .frame(width: 220)   // stub illustration size, one-off
                     .foregroundStyle(Color.semiInk.opacity(0.18))
                 Text("Simulator preview")
                     .font(.semiMono(11))
@@ -28,7 +25,7 @@ struct SimulatorPreviewStub: View {
                     .font(.semiBody(11))
                     .foregroundStyle(Color.semiInk.opacity(0.45))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 40)
+                    .padding(.horizontal, Spacing.xxl + Spacing.sm)
             }
         }
     }

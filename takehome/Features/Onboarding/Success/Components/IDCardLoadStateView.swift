@@ -27,12 +27,12 @@ struct IDCardLoadStateView: View {
                 .font(.semiBody(13))
                 .foregroundStyle(Color.textSecondary)
         }
-        .frame(height: 280)
+        .frame(height: Size.cardSlot)
     }
 
     private func loadedView(card: IDCard) -> some View {
         IDCardView(card: card, localAvatarURL: localAvatarURL)
-            .frame(maxWidth: 280)
+            .frame(maxWidth: Size.cardSlot)
             .rotationEffect(.degrees(3))   // slight clockwise slant — top tips right, per Figma
             .scaleEffect(cardAppeared ? 1 : 0.85)
             .opacity(cardAppeared ? 1 : 0)
@@ -57,6 +57,6 @@ struct IDCardLoadStateView: View {
                 .foregroundStyle(Color.textTertiary)
                 .padding(.horizontal, Spacing.xxl)
         }
-        .frame(height: 280)
+        .frame(height: Size.cardSlot)
     }
 }

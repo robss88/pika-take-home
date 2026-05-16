@@ -81,4 +81,37 @@ struct SignInViewModelTests {
         await vm.submit()
         #expect(vm.isSubmitting == false)
     }
+
+    @Test func oauth_google_advances_with_placeholder_phone_when_auth_succeeds() async {
+        var capturedPhone: E164?
+        let vm = SignInViewModel(
+            auth: MockAuthService(delay: .zero),
+            phoneFormatter: USPhoneNumberFormatter(),
+            onSignedIn: { capturedPhone = $0 }
+        )
+
+        await vm.oauth(.google)
+
+        // OAuth doesn't yield a phone — the VM synthesizes a placeholder
+        // E164 to satisfy the typed route payload (documented seam).
+        #expect(capturedPhone != nil)
+        #expect(capturedPhone?.countryCode == "1")
+        #expect(vm.error == nil)
+        #expect(vm.isSubmitting == false)
+    }
+
+    @Test func oauth_failure_surfaces_error_and_does_not_advance() async {
+        var didAdvance = false
+        let vm = SignInViewModel(
+            auth: MockAuthService(shouldFail: true, delay: .zero),
+            phoneFormatter: USPhoneNumberFormatter(),
+            onSignedIn: { _ in didAdvance = true }
+        )
+
+        await vm.oauth(.email)
+
+        #expect(didAdvance == false)
+        #expect(vm.error != nil)
+        #expect(vm.isSubmitting == false)
+    }
 }

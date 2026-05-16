@@ -4,12 +4,21 @@ struct IDCardView: View {
     let card: IDCard
     var localAvatarURL: URL? = nil
 
+    // IDCard-internal layout constants. Co-located on the view because the
+    // card is the only consumer; they're not part of the shared DS scale.
+    private static let avatarSize = CGSize(width: 130, height: 160)
+    private static let barcodeSize = CGSize(width: 130, height: 38)
+    private static let rabbitSize = CGSize(width: 34, height: 26)
+    private static let cardCornerRadius: CGFloat = 20
+    private static let avatarCornerRadius: CGFloat = 6
+    private static let cardShadowRadius: CGFloat = 18
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top, spacing: 14) {
+            HStack(alignment: .top, spacing: Spacing.mdLg) {
                 avatar
-                    .frame(width: 130, height: 160)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .frame(width: Self.avatarSize.width, height: Self.avatarSize.height)
+                    .clipShape(RoundedRectangle(cornerRadius: Self.avatarCornerRadius))
 
                 Spacer(minLength: 0)
 
@@ -18,13 +27,13 @@ struct IDCardView: View {
                     .resizable()
                     .scaledToFit()
                     .foregroundStyle(Color.semiInk)
-                    .frame(width: 34, height: 26)
+                    .frame(width: Self.rabbitSize.width, height: Self.rabbitSize.height)
             }
 
             Text(card.name)
                 .font(.semiDisplay(34))
                 .foregroundStyle(Color.semiInk)
-                .padding(.top, 12)
+                .padding(.top, Spacing.md)
 
             Rectangle()
                 .fill(Color.semiInk)
@@ -32,7 +41,7 @@ struct IDCardView: View {
                 .padding(.vertical, Spacing.sm)
 
             HStack(alignment: .top, spacing: Spacing.md) {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: Spacing.smMd) {
                     field(label: "BORN ON PIKA", value: card.bornOn)
                     field(label: "LOCATION", value: card.location)
                     field(label: "STATUS", value: card.status)
@@ -42,22 +51,22 @@ struct IDCardView: View {
                 Spacer(minLength: 0)
 
                 BarcodeView(payload: card.barcodePayload)
-                    .frame(width: 130, height: 38)
+                    .frame(width: Self.barcodeSize.width, height: Self.barcodeSize.height)
                     .rotationEffect(.degrees(90))
-                    .frame(width: 38, height: 130)
+                    .frame(width: Self.barcodeSize.height, height: Self.barcodeSize.width)
                     .blendMode(.multiply)   // drops the generator's white background
                     .padding(.trailing, Spacing.xxs)
             }
         }
-        .padding(Spacing.xl - 4)
+        .padding(Spacing.lgXl)
         .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
                 .fill(Color.semiOffWhite)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
                         .strokeBorder(Color.semiInk.opacity(0.08), lineWidth: Size.hairline)
                 )
-                .shadow(color: Color.semiInk.opacity(0.08), radius: 18, x: 0, y: 8)
+                .shadow(color: Color.semiInk.opacity(0.08), radius: Self.cardShadowRadius, x: 0, y: 8)
         )
     }
 
@@ -93,7 +102,7 @@ struct IDCardView: View {
             Image(systemName: "person.fill")
                 .resizable()
                 .scaledToFit()
-                .padding(28)
+                .padding(Spacing.xlXxl)
                 .foregroundStyle(Color.semiInk.opacity(0.25))
         )
     }

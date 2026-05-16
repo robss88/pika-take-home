@@ -76,11 +76,15 @@ struct SuccessView: View {
         .springAppear(delay: 0.3)
     }
 
+    /// View-level rendering (kept out of the view model on purpose): the
+    /// `ImageRenderer` rebuilds the card view tree to snapshot it, which is
+    /// SwiftUI presentation, not domain logic. Moving it to the view model
+    /// would entangle UIKit (`UIImage`) with the otherwise UI-agnostic VM.
     private func shareSheet(for card: IDCard) -> some View {
         let renderer = ImageRenderer(
             content: IDCardView(card: card, localAvatarURL: viewModel.selfieURL)
                 .frame(width: 360)
-                .padding(Spacing.xl - 4)
+                .padding(Spacing.lgXl)
                 .background(Color.semiOffWhite)
         )
         renderer.scale = UITraitCollection.current.displayScale

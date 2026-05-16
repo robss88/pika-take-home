@@ -24,7 +24,7 @@ extension Font {
         .custom("Telka-Medium", size: size)
     }
 
-    // MARK: - Tabular / accent (SpaceMono + BPdotsVertical)
+    // MARK: - Tabular (SpaceMono)
 
     /// Field labels, ID-card tabular data — SpaceMono Bold.
     static func semiMono(_ size: CGFloat) -> Font {
@@ -33,9 +33,5 @@ extension Font {
     /// Lighter monospaced — SpaceMono Regular. Country-code badge.
     static func semiMonoRegular(_ size: CGFloat) -> Font {
         .custom("SpaceMono-Regular", size: size)
-    }
-    /// Accent / barcode-strip ornamentation — BPdotsVertical.
-    static func semiAccent(_ size: CGFloat) -> Font {
-        .custom("BPdotsVertical", size: size)
     }
 }

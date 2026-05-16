@@ -11,8 +11,11 @@ struct TopErrorBanner: View {
                 .font(.semiBody(13))
                 .foregroundStyle(.white)
                 .padding(.horizontal, Spacing.lg)
-                .padding(.vertical, Spacing.md - 2)
+                .padding(.vertical, Spacing.smMd)
                 .background(Color.red.opacity(0.85), in: .capsule)
+                // Approximates the status-bar inset; switch to a
+                // safe-area-aware overlay (`safeAreaInset`) if this banner
+                // moves to a route without a hidden nav-bar.
                 .padding(.top, 60)
                 .transition(.move(edge: .top).combined(with: .opacity))
             Spacer()

@@ -1,12 +1,7 @@
-//
-//  takehomeUITestsLaunchTests.swift
-//  takehomeUITests
-//
-//  Created by Robert Avellar on 5/13/26.
-//
-
 import XCTest
 
+/// Captures a launch screenshot for every supported UI configuration. Useful
+/// as a visual sanity check; the assertions live in the sibling smoke test.
 final class takehomeUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
@@ -21,9 +16,6 @@ final class takehomeUITestsLaunchTests: XCTestCase {
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
-
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"

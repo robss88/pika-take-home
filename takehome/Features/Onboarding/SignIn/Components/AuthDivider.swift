@@ -5,7 +5,7 @@ struct AuthDivider: View {
     let label: String
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             line
             Text(label)
                 .font(.semiBodyMedium(12))
@@ -18,6 +18,6 @@ struct AuthDivider: View {
     private var line: some View {
         Rectangle()
             .fill(Color.semiInk.opacity(0.1))
-            .frame(height: 1)
+            .frame(height: Size.hairline)
     }
 }
