@@ -10,6 +10,10 @@ struct PhoneNumberField: View {
     var countryFlag: String = "🇺🇸"
     var dialCode: String = "+1"
     var placeholder: String = "Phone number"
+    /// Maximum number of significant digits accepted, tied to the country.
+    /// Extra keystrokes are rejected before they reach the binding so the
+    /// user never sees an 11th digit flash on screen. US is 10.
+    var maxDigits: Int = 10
 
     /// Mirror of `text` that the TextField writes into directly. The two
     /// stay in sync via the `onChange` pair below. This keeps the
@@ -56,6 +60,11 @@ struct PhoneNumberField: View {
         .animation(.easeInOut(duration: 0.2), value: text.isEmpty)
         .onAppear { localText = text }
         .onChange(of: localText) { _, new in
+            // Hard-cap by country: drop the keystroke before it propagates.
+            if new.count(where: \.isNumber) > maxDigits {
+                localText = text
+                return
+            }
             // Push raw edits up to the caller's formatter.
             if new != text { text = new }
         }

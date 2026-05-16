@@ -37,8 +37,18 @@ final class AudioPlayer {
 
     /// One-shot playback (e.g. tapping Play on the voice-recording review).
     /// Returns when playback completes or `cancel` is called.
+    ///
+    /// The category is switched to `.playback` so audio routes through the
+    /// loudspeaker — the voice flow leaves the shared session in
+    /// `.playAndRecord` after recording, which on iPhone otherwise routes to
+    /// the receiver. Recorders that come after this will re-set the category.
     func playOnce(url: URL) async {
         do {
+            let session = AVAudioSession.sharedInstance()
+            try? session.setCategory(.playback, mode: .default, options: [])
+            try? session.overrideOutputAudioPort(.speaker)
+            try? session.setActive(true, options: [])
+
             let p = try AVAudioPlayer(contentsOf: url)
             p.prepareToPlay()
             p.play()
