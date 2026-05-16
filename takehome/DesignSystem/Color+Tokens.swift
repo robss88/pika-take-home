@@ -17,6 +17,9 @@ extension Color {
     static let semiCream = Color(red: 0.929, green: 0.910, blue: 0.875)
     /// Subdued field background.
     static let semiFieldFill = Color(red: 0.937, green: 0.925, blue: 0.910)
+    /// Warm peach-cream — bottom stop of the Success/Voice background
+    /// gradient. Matches the screenshot's subtle pink fade.
+    static let semiBlush = Color(red: 0.957, green: 0.894, blue: 0.871)
 
     // MARK: - Semantic overlays (Figma `surface-dark-*` + text scale)
 

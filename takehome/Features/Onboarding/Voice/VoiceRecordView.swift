@@ -5,7 +5,12 @@ struct VoiceRecordView: View {
 
     var body: some View {
         ZStack {
-            Color.semiOffWhite.ignoresSafeArea()
+            LinearGradient(
+                colors: [Color.semiOffWhite, Color.semiBlush],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
             VStack(spacing: Spacing.xl) {
                 TopProgressBar(step: 1, total: 3, onBack: viewModel.back)

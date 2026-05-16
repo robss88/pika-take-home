@@ -6,7 +6,7 @@ struct SuccessView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color.semiOffWhite, Color.semiCream],
+                colors: [Color.semiOffWhite, Color.semiBlush],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -34,7 +34,7 @@ struct SuccessView: View {
     private var header: some View {
         HStack {
             Spacer()
-            CircleIconButton(systemName: "xmark", size: 36, action: viewModel.dismiss)
+            CloseButton(action: viewModel.dismiss)
                 .padding(.top, Spacing.sm)
                 .padding(.trailing, Spacing.lg)
         }

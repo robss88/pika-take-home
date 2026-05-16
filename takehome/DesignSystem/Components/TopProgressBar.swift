@@ -1,9 +1,13 @@
 import SwiftUI
 
-/// Top-of-screen progress indicator: back chip + a single continuous 1pt
+/// Top-of-screen progress indicator: back chip + a short continuous 1pt
 /// progress line. Caller chooses the fill and track colors so this works
 /// on both dark backdrops (camera) and light ones (voice).
 struct TopProgressBar: View {
+    /// Width of the progress track itself — kept short so the bar reads as
+    /// a discrete indicator next to the back chip, not a full-screen rule.
+    private static let trackWidth: CGFloat = 180
+
     let step: Int          // 0-based: how many steps are completed
     let total: Int
     var tint: Color = .semiPurpleDeep
@@ -15,16 +19,16 @@ struct TopProgressBar: View {
         HStack(spacing: Spacing.lg) {
             BackButton(arrowColor: arrowColor, action: onBack)
 
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(track)
-                    Capsule()
-                        .fill(tint)
-                        .frame(width: geo.size.width * progress)
-                        .animation(Motion.progressFill, value: step)
-                }
+            ZStack(alignment: .leading) {
+                Capsule().fill(track)
+                Capsule()
+                    .fill(tint)
+                    .frame(width: Self.trackWidth * progress)
+                    .animation(Motion.progressFill, value: step)
             }
-            .frame(height: Size.progressBarThickness)
+            .frame(width: Self.trackWidth, height: Size.progressBarThickness)
+
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, Spacing.xl)
     }
