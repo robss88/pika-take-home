@@ -1,8 +1,13 @@
 import SwiftUI
 
 extension View {
-    /// Applies a small slide-up + fade-in spring on appear. Stack multiple
-    /// instances with increasing `delay` to stagger entrance.
+    /// Slides the view up by `distance` and fades it in with `Motion.entrance`
+    /// the first time it appears. Stack multiple instances with increasing
+    /// `delay` on sibling views to cascade their entrances.
+    ///
+    /// - Parameters:
+    ///   - delay: Seconds before the animation fires (used for staggering).
+    ///   - distance: Pixels below the resting position to start the slide.
     func springAppear(delay: Double = 0, distance: CGFloat = 14) -> some View {
         modifier(SpringAppearModifier(delay: delay, distance: distance))
     }

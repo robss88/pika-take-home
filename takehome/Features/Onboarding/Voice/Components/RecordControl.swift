@@ -1,5 +1,14 @@
 import SwiftUI
 
+/// Morphing control at the bottom of the voice screen. Renders one of three
+/// shapes depending on the recorder's phase:
+/// - `.idle`        → solid record dot
+/// - `.listening`   → filled stop square + pulsing ring
+/// - `.review` / `.playing` → three-button row: re-record / accept / play
+///
+/// `matchedGeometryEffect` ties the lavender core across phases so the
+/// shape morphs rather than swapping in/out, giving the recorder its
+/// signature transition feel.
 struct RecordControl: View {
     // Component-internal morph constants. Kept private so they don't pollute
     // the shared DS namespace — they only make sense in this control.

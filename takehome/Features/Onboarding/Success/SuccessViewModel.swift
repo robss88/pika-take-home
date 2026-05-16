@@ -1,8 +1,13 @@
 import Foundation
 import Observation
 
+/// Drives the success screen. On `load()` it builds the `AISelfRequest`
+/// from the captured media and calls the backend; `IDCardLoadStateView`
+/// renders `loadState` (loading / loaded / error). `dismiss()` resets the
+/// onboarding stack so the user lands back on sign-in.
 @Observable
 final class SuccessViewModel {
+    /// Three-state machine for the card-creation request.
     enum LoadState: Equatable {
         case loading
         case loaded(IDCard)

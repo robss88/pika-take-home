@@ -1,5 +1,9 @@
 import SwiftUI
 
+/// Brand + semantic color tokens. Views read colors through these names so a
+/// palette tweak is a one-file change. Names lean on Figma vocabulary
+/// (`semi*` for brand surfaces, `surfaceDark*` / `text*` / `contentDark*`
+/// for semantic roles) so a Figma rename traces cleanly here.
 extension Color {
     // MARK: - Brand surfaces
 

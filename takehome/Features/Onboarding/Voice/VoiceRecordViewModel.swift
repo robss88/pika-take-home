@@ -1,8 +1,17 @@
 import Foundation
 import Observation
 
+/// Drives the voice-recording screen. Owns the morph state for the record
+/// button (`phase`), the script-highlight index streamed from the speech
+/// aligner, and the recorded file URL. On `accept()` the file is run
+/// through the `MediaUploader` to obtain a server-side key before handing
+/// off to the next step.
 @Observable
 final class VoiceRecordViewModel {
+    /// Voice flow states. Drives `RecordControl`'s morph + the listening
+    /// "…" indicator. Optimistic transitions in `beginRecording` /
+    /// `endRecording` flip phase before the recorder finishes its work so
+    /// the UI feels instant; failures revert to `.idle` with an error.
     enum Phase: Equatable {
         case idle
         case listening

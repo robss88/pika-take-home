@@ -1,14 +1,21 @@
 import Foundation
 import Observation
 
+/// Drives the camera screen. Coordinates lifecycle (start → ready → capture)
+/// against the injected `CameraService`, surfaces permission / failure
+/// states, and propagates the captured photo URL to the coordinator via
+/// `onCaptured`. The phase machine doubles as the view's drive signal — see
+/// `CameraView.body` for the rendering per case.
 @Observable
 final class CameraViewModel {
+    /// Camera lifecycle states. Drives both the view's rendering and the
+    /// VM's reentrancy guards (`start`, `capture`, `flip` all gate on phase).
     enum Phase: Equatable {
-        case idle
-        case starting
-        case ready
-        case capturing
-        case denied
+        case idle       // session not yet asked to start
+        case starting   // awaiting `cameraService.start()`
+        case ready      // preview is live, shutter is enabled
+        case capturing  // shutter pressed, photo write in flight
+        case denied     // user denied camera permission
         case failed(String)
     }
 

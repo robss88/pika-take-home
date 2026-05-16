@@ -2,6 +2,14 @@ import CoreImage.CIFilterBuiltins
 import SwiftUI
 import UIKit
 
+/// Code128 barcode rendered from an arbitrary string `payload`. The
+/// generator returns a black-on-white image; callers typically pair this
+/// view with `.blendMode(.multiply)` so the white background drops out
+/// against a tinted card surface.
+///
+/// `interpolation(.none)` keeps the bars crisp when the image is scaled.
+/// A 4× transform is applied to the source CIImage so the rasterized
+/// output is high-DPI before SwiftUI resizes it.
 struct BarcodeView: View {
     let payload: String
     var aspectRatio: CGFloat = 4
@@ -13,6 +21,8 @@ struct BarcodeView: View {
                 .resizable()
                 .aspectRatio(aspectRatio, contentMode: .fit)
         } else {
+            // Generator failed (rare — empty payload or CI init issue).
+            // Render an inert placeholder rather than crashing.
             Rectangle()
                 .fill(Color.semiInk.opacity(0.2))
                 .aspectRatio(aspectRatio, contentMode: .fit)

@@ -1,7 +1,10 @@
 import CoreGraphics
 
-/// Fixed size tokens for controls that have an intrinsic Figma height/width.
-/// Variables (image dimensions, layout-driven heights) stay inline.
+/// Fixed-size tokens for controls that have an intrinsic Figma height/width.
+/// Layout-driven sizes (image dimensions, anything that resizes with its
+/// content) stay inline at the call site. The rule for promoting a literal
+/// to a token here: it must repeat across ≥2 files or capture a shared
+/// semantic concept (e.g. "control height" applies to several components).
 enum Size {
     /// Primary control height (CapsuleButton, PhoneNumberField).
     static let controlHeight: CGFloat = 56

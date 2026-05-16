@@ -1,11 +1,18 @@
 import SwiftUI
 
+/// Visual style for `CapsuleButton`. Each case maps to a (text, background)
+/// color pair; pick by intent at the call site rather than by name —
+/// `.lavender` for the primary CTA in a flow, `.primaryDark` for terminal
+/// actions, `.secondarySurface` for a quieter dark-surface chip.
 enum CapsuleButtonStyle {
     case lavender           // big primary on SignIn / Voice accept
     case primaryDark        // black pill on Success ("Open Messages")
     case secondarySurface   // translucent dark surface chip ("Share ID Card")
 }
 
+/// Full-width primary action button. Generic over `Label` so callers can put
+/// arbitrary content inside (text, a spinner mid-submit, text + icon). A
+/// `Text`-only convenience init is provided below for the common case.
 struct CapsuleButton<Label: View>: View {
     let style: CapsuleButtonStyle
     let isEnabled: Bool

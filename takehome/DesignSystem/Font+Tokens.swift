@@ -1,5 +1,9 @@
 import SwiftUI
 
+/// Typography tokens grouped by typeface family. Three families are in use:
+/// Telka Extended (display + titles), Telka (proportional body), SpaceMono
+/// (tabular data). Each token takes a size so the same family/weight pairing
+/// works across multiple sizes without proliferating named tokens.
 extension Font {
     // MARK: - Display / titles (Telka Extended)
 

@@ -36,7 +36,10 @@ struct CameraView: View {
                 CameraControls(
                     isReady: viewModel.phase == .ready,
                     isCapturing: viewModel.phase == .capturing,
-                    onLibrary: { /* Library seam */ },
+                    // Library picker not yet wired — would present
+                    // `PHPickerViewController` and forward the chosen image
+                    // through `onCaptured` the same way the shutter does.
+                    onLibrary: { },
                     onShutter: { Task { await viewModel.capture() } },
                     onFlip: viewModel.flip
                 )

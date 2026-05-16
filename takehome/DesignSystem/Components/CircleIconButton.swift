@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// Round button with a centered glyph. Accepts either an SF Symbol name or
+/// an asset-catalog image. Used for OAuth chips on sign-in and the
+/// re-record / play controls on the voice screen. Callers can override the
+/// proportional glyph size with `iconSize` when the design specifies an
+/// exact value (e.g. the 24pt OAuth glyph inside a 64pt button).
 struct CircleIconButton: View {
     enum Icon {
         case systemName(String)
